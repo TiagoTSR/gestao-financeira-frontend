@@ -1,1 +1,83 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #404C51;
+}
+
+.grid-12 label {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.grid-12 button {
+  background-color: #2684ff !important;
+  color: white !important;
+  border: 2px solid #2684ff !important;
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease; /* Transição suave */
+}
+
+.grid-12 button:hover {
+  background-color: #1e6bd8 !important; /* Azul mais escuro */
+  border-color: #1e6bd8 !important;
+  transform: translateY(-1px); /* Levanta levemente */
+  box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
+}
+
+.grid-12 button:active {
+  transform: translateY(0); /* Volta ao normal ao clicar */
+  box-shadow: 0 2px 4px rgba(38, 132, 255, 0.2);
+}
+
+/* Específico para PrimeNG p-button */
+button.p-button {
+  background-color: #2684ff !important;
+  border: 2px solid #2684ff !important;
+}
+
+button.p-button:hover {
+  background-color: #1e6bd8 !important;
+  border-color: #1e6bd8 !important;
+}
+
+
+.grid-12.grid-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem; /* Espaçamento entre label e input */
+}
+
+.grid-12.grid-fluid label {
+  margin: 0; /* Remove margem padrão do label */
+  order: 1; /* Garante que label fique primeiro */
+}
+
+.grid-12.grid-fluid input {
+  order: 2; /* Input fica abaixo */
+}
+
+input.p-inputtext {
+  color: #404C51;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+
+input.p-inputtext:focus {
+  outline: none;
+  border-color: #2684ff;
+}
+
+
+
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+    margin: 0 auto;
+  }
+}
