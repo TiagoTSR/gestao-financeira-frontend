@@ -20,6 +20,43 @@ body {
   transition: all 0.2s ease; /* Transição suave */
 }
 
+.col-data-header {
+  background-color: #caccce !important;
+  color: #404C51 !important;
+  font-weight: bold !important;
+  border: 1px solid #858586 !important;
+}
+
+.col-valor-content{
+  border: 1px solid #858586 !important;
+  color: #404C51 !important;
+}
+
+.col-data-header,
+p-table th {
+  text-align: center !important;
+}
+
+
+p-table tbody tr td:nth-child(1), td:nth-child(2), td:nth-child(3) {
+  padding-left: 12px !important;
+}
+
+p-table tbody tr td:nth-child(3) {
+  text-align: center !important;
+  color: #404C51 !important;
+}
+
+p-table tbody tr td:nth-child(4) {
+  text-align: center !important;
+  color: #404C51 !important;
+}
+
+p-table tbody tr td:nth-child(5) {
+  text-align: center !important;
+  color: #404C51 !important;
+}
+
 .grid-12 button:hover {
   background-color: #1e6bd8 !important; /* Azul mais escuro */
   border-color: #1e6bd8 !important;
