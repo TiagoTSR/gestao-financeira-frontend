@@ -1,0 +1,75 @@
+.grid-12 label {
+  font-weight: bold;
+  margin-top: 20px;
+}
+.grid-12 .In1 {
+  width: 95%;
+  margin-top: 5px;
+  border: 1px solid #ced4da
+}
+.grid-12 .In2 {
+  border-radius: 5px;
+  border: 1px solid #ced4da
+}
+.grid-12.grid-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem; /* Espaçamento entre label e input */
+}
+.grid-12.grid-fluid label {
+  margin: 0; /* Remove margem padrão do label */
+  order: 1; /* Garante que label fique primeiro */
+}
+.grid-12.grid-fluid input {
+  order: 2; /* Input fica abaixo */
+}
+/* *********************************************************************************** */
+.grid-12 label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+.grid-12 input{
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 5px;
+}
+/* *********************************************************************************** */
+.grid-12 button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #08b616;
+}
+
+/* Estilo para o botão da lixeira */
+.delete-btn {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.grid-12 button:hover {
+  transform: translateY(-1px); /* Levanta levemente */
+  box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
+}
+.grid-12 a{
+    margin-top: 0px;
+    margin-bottom: 20px;
+    background-color: #08b616;
+}
+
+.grid-12 a:hover {
+  transform: translateY(-1px); /* Levanta levemente */
+  box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
+}
+/* *********************************************************************************** */
+.col-12,p-table th {
+    margin-top: 10px;
+}
+
+.col-data-header,
+p-table th {
+  text-align: center !important;
+}
+
+p-table td {
+  text-align: center !important;
+}
