@@ -14,5 +14,29 @@
       <button pButton type="submit" label="Pesquisar"></button>
     </div>
 
+    <div class="grid">
+    <div class="col-12">
+      <p-table [value]="pessoas">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="col-data-header">Nome</th>
+            <th class="col-data-header">Cidade</th>
+            <th class="col-data-header">Estado</th>
+            <th class="col-data-header">Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pessoa>
+          <tr>
+            <td class="col-valor-content">{{ pessoa.nome }}</td>
+            <td class="col-valor-content">{{ pessoa.cidade }}</td>
+            <td class="col-valor-content">{{ pessoa.estado }}</td>
+            <td class="col-valor-content">{{ pessoa.ativo ? 'Ativo' : 'Inativo' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="grid-12">
+      <a pButton label="Nova Pessoa"></a>
+    </div>
   </div>
 </div>
