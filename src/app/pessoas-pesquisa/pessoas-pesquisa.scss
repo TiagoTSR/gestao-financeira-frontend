@@ -22,6 +22,12 @@
   background-color: #08b616;
 }
 
+.delete-btn {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+
 .grid-12 button:hover {
   transform: translateY(-1px); /* Levanta levemente */
   box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
@@ -30,6 +36,11 @@
     margin-top: 0px;
     margin-bottom: 20px;
     background-color: #08b616;
+}
+
+.grid-12 a:hover {
+  transform: translateY(-1px); /* Levanta levemente */
+  box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
 }
 
 /* *********************************************************************************** */

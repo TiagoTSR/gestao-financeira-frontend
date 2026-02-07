@@ -23,6 +23,7 @@
             <th class="col-data-header">Cidade</th>
             <th class="col-data-header">Estado</th>
             <th class="col-data-header">Status</th>
+            <th class="col-data-header"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-pessoa>
@@ -31,6 +32,10 @@
             <td class="col-valor-content">{{ pessoa.cidade }}</td>
             <td class="col-valor-content">{{ pessoa.estado }}</td>
             <td class="col-valor-content" [style.color]="pessoa.ativo ? 'blue' : 'red'">{{ pessoa.ativo ? 'Ativo' : 'Inativo' }}</td>
+            <td class="col-acoes">
+              <a pButton class="p-button" icon="pi pi-pencil"></a>
+              <button pButton class="delete-btn" icon="pi pi-trash"></button>
+            </td>
           </tr>
         </ng-template>
       </p-table>
