@@ -1,0 +1,23 @@
+.grid-12 label {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.grid-12.grid-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem; /* Espaçamento entre label e input */
+}
+.grid-12.grid-fluid label {
+  margin: 0; /* Remove margem padrão do label */
+  order: 1; /* Garante que label fique primeiro */
+}
+.grid-12.grid-fluid input {
+  order: 2; /* Input fica abaixo */
+}
+/* *********************************************************************************** */
+.grid-12 button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #08b616;
+}
