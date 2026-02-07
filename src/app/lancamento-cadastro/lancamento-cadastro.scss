@@ -1,0 +1,28 @@
+@import "primeflex/primeflex.css";
+/* *********************************************************************************** */
+.p-fluid {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-fluid label {
+  margin-bottom: 0.5rem; /* Adiciona um pequeno espaço entre o texto e o campo */
+  font-weight: bold;      /* Opcional: destaca o rótulo */
+}
+/* *********************************************************************************** */
+/* Seleciona os botões e o link dentro da div de ações */
+.col-12 button, 
+.col-12 a {
+  margin-right: 5px;
+}
+
+/* Opcional: Remove a margem do último elemento para não sobrar espaço na direita */
+.col-12 *:last-child {
+  margin-right: 0;
+  text-decoration: none;
+}
+
+.col-12 > * a:hover {
+  transform: translateY(-1px); /* Levanta levemente */
+  box-shadow: 0 4px 8px rgba(38, 132, 255, 0.3); /* Sombra sutil */
+}
