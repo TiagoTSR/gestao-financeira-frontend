@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 
 @Component({
@@ -21,7 +22,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerModule,
     MatInputModule,
     MatFormFieldModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    SelectButtonModule
   ],
   templateUrl: './lancamento-cadastro.html',
   styleUrl: './lancamento-cadastro.scss',
@@ -30,5 +32,10 @@ export class LancamentoCadastro {
 
   dataVencimento: Date | undefined;
   dataRecebimento: Date | undefined;
+
+  tipos = [
+    { label: 'Receita', value: 'RECEITA' },
+    { label: 'Despesa', value: 'DESPESA' },
+  ];
   
 }
