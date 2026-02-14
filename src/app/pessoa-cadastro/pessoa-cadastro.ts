@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-pessoa-cadastro',
@@ -12,7 +13,8 @@ import { TableModule } from 'primeng/table';
     ButtonModule,
     InputNumberModule,
     InputTextModule,
-    TableModule
+    TableModule,
+    NgxMaskDirective
   ],
   templateUrl: './pessoa-cadastro.html',
   styleUrl: './pessoa-cadastro.scss',
