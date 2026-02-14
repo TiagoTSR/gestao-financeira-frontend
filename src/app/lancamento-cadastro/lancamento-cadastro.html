@@ -13,7 +13,7 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Vencimento</mat-label>
           <input 
-            matInput 
+            name="vencimento" matInput 
             [matDatepicker]="pickerVencimento"
             [(ngModel)]="dataVencimento">
           <mat-datepicker-toggle matIconSuffix [for]="pickerVencimento"></mat-datepicker-toggle>
@@ -37,7 +37,7 @@
       </div>
       <div class="col-12 md:col-3 p-fluid">
         <label>Valor</label>
-        <input pInputText type="text" placeholder="0,00">
+        <p-inputNumber name="valor" mode="currency" currency="BRL" locale="pt-BR" placeholder="0,00"></p-inputNumber>
       </div>
       <div class="col-12 md:col-6 p-fluid">
         <mat-form-field appearance="outline" class="w-full">
