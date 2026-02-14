@@ -1,0 +1,21 @@
+@import "primeflex/primeflex.css";
+.col-12.p-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.col-12.p-fluid label {
+  margin: 0; 
+  order: 1; 
+}
+.col-12.p-fluid input {
+  width: 100%;
+  order: 2; 
+  line-height: 25px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+.col-12 button {
+  margin-right: 5px;
+}

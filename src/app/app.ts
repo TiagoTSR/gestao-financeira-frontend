@@ -4,6 +4,7 @@ import { TableModule } from 'primeng/table';
 import { Navbar } from './navbar/navbar';
 import { PessoasPesquisa } from './pessoas-pesquisa/pessoas-pesquisa';
 import { LancamentoCadastro } from './lancamento-cadastro/lancamento-cadastro';
+import { PessoaCadastro } from './pessoa-cadastro/pessoa-cadastro';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { LancamentoCadastro } from './lancamento-cadastro/lancamento-cadastro';
     PessoasPesquisa,
     LancamentoCadastro,
     TableModule,
-    Navbar
+    Navbar,
+    PessoaCadastro
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
