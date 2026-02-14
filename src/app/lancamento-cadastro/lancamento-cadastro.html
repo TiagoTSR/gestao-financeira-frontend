@@ -40,12 +40,25 @@
         <input pInputText type="text" placeholder="0,00">
       </div>
       <div class="col-12 md:col-6 p-fluid">
-        <label>Categoria</label>
-        <input pInputText type="text">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Categoria</mat-label>
+          <mat-select
+          name="categoria" [(ngModel)]="categoriaSelecionada">
+            <mat-option *ngFor="let cat of categorias" [value]="cat.value">
+              {{ cat.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-12 md:col-6 p-fluid">
-        <label>Pessoa</label>
-        <input pInputText type="text">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Pessoa</mat-label>
+          <mat-select name="pessoa" [(ngModel)]="pessoaSelecionada">
+            <mat-option *ngFor="let pessoa of pessoas" [value]="pessoa.value">
+              {{ pessoa.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-12 p-fluid">
         <label>Observação</label>
