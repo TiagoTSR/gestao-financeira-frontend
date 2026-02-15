@@ -8,27 +8,43 @@
   
         <div class="col-12 p-fluid">
           <label>Nome</label>
-          <input pInputText type="text">
+          <input pInputText
+                name="nome"
+                type="text"
+                appOnlyLettersName
+                [maxLength]="20"
+                placeholder="Digite seu nome" ngModel #nome="ngModel" [required]="true" minlength="5">
+          <app-message [control]="nome.control" error="required" text="Nome é obrigatório"></app-message>
+          <app-message [control]="nome.control" error="minlength" text="Nome deve ter no mínimo 5 caracteres">
+          </app-message>
         </div>
   
         <div class="col-12 md:col-9 p-fluid">
           <label>Logradouro</label>
-          <input pInputText type="text">
+          <input name="logradouro" pInputText appAddress [maxLength]="50" type="text"
+          ngModel #logradouro="ngModel" [required]="true">
+
+          <app-message [control]="logradouro.control" error="required"
+            text="Informe o logradouro"></app-message>
         </div>
   
         <div class="col-12 md:col-3 p-fluid">
           <label>Número</label>
-          <input pInputText name="numero" mask="00000" placeholder="00000">
+          <input pInputText name="numero" mask="00000" [maxLength]="3" ngModel #numero="ngModel" placeholder="00000" [required]="true">
+          <app-message [control]="numero.control" error="required" text="Número é obrigatório"></app-message>
         </div>
   
         <div class="col-12 md:col-4 p-fluid">
           <label>Complemento</label>
-          <input pInputText type="text">
+          <input name="complemento" pInputText appComplement [maxLength]="50" ngModel #complemento="ngModel" type="text">
         </div>
   
         <div class="col-12 md:col-4 p-fluid">
           <label>Bairro</label>
-          <input pInputText type="text">
+          <input name="bairro" pInputText appAddress [maxLength]="50" type="text" ngModel #bairro="ngModel" [required]="true">
+
+          <app-message [control]="bairro.control" error="required"
+            text="Informe o bairro"></app-message>
         </div>
   
         <div class="col-12 md:col-4 p-fluid">
@@ -38,12 +54,17 @@
   
         <div class="col-12 md:col-6 p-fluid">
           <label>Cidade</label>
-          <input pInputText type="text">
+          <input name="cidade" pInputText appOnlyLettersName
+                [maxLength]="20" type="text" ngModel #cidade="ngModel" [required]="true" minlength="3">
+          <app-message [control]="cidade.control" error="required"
+            text="Informe a cidade"></app-message>
         </div>
   
         <div class="col-12 md:col-6 p-fluid">
           <label>Estado</label>
-          <input pInputText type="text">
+           <input name="estado" pInputText appState type="text" ngModel #estado="ngModel" [required]="true" minlength="2" maxlength="2">
+          <app-message [control]="estado.control" error="required"
+            text="Informe o estado"></app-message>
         </div>
   
         <div class="col-12">

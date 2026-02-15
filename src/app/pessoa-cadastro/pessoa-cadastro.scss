@@ -1,4 +1,13 @@
 @import "primeflex/primeflex.css";
+
+.p-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: relative; 
+  padding-bottom: 20px;
+}
+
 .col-12.p-fluid {
   display: flex;
   flex-direction: column;
