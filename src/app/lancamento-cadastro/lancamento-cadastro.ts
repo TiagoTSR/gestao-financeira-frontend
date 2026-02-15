@@ -13,6 +13,7 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import localePt from '@angular/common/locales/pt';
+import { MessageComponent } from '../message/message/message';
 registerLocaleData(localePt);
 
 
@@ -31,7 +32,8 @@ registerLocaleData(localePt);
     SelectButtonModule,
     CommonModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MessageComponent
   ],
   templateUrl: './lancamento-cadastro.html',
   styleUrl: './lancamento-cadastro.scss',

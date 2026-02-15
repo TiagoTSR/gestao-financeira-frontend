@@ -3,11 +3,13 @@
 .p-fluid {
   display: flex;
   flex-direction: column;
+  position: relative; /* Para posicionamento absoluto das mensagens */
+  padding-bottom: 20px; /* Espaço fixo para as mensagens de erro */
 }
 
 .p-fluid label {
   margin-bottom: 0.5rem; /* Adiciona um pequeno espaço entre o texto e o campo */
-  font-weight: bold;      /* Opcional: destaca o rótulo */
+  font-weight: bold;     
 }
 /* *********************************************************************************** */
 /* Seleciona os botões e o link dentro da div de ações */
