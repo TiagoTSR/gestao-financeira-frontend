@@ -5,7 +5,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { NgxMaskDirective } from 'ngx-mask';
-import { MessageComponent } from '../message/message/message';
+import { MessageComponent } from '../../message/message/message';
 
 @Component({
   selector: 'app-pessoa-cadastro',
