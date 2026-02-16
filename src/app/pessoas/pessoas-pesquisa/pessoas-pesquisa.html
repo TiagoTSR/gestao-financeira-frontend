@@ -16,7 +16,12 @@
 
     <div class="grid">
     <div class="col-12">
-      <p-table [value]="pessoas" [paginator]="true" [rows]="5">
+      <p-table [value]="pessoas" [paginator]="true"
+               [rows]="5"
+               [totalRecords]="totalRegistros"
+               [lazy]="true"
+               (onLazyLoad)="aoMudarPagina($event)"
+               [loading]="loading">
         <ng-template pTemplate="header">
           <tr>
             <th class="col-data-header">Nome</th>
@@ -29,8 +34,8 @@
         <ng-template pTemplate="body" let-pessoa>
           <tr>
             <td class="col-valor-content">{{ pessoa.nome }}</td>
-            <td class="col-valor-content">{{ pessoa.cidade }}</td>
-            <td class="col-valor-content">{{ pessoa.estado }}</td>
+            <td class="col-valor-content">{{ pessoa.endereco?.cidade }}</td>
+            <td class="col-valor-content">{{ pessoa.endereco?.estado }}</td>
             <td class="col-valor-content" [style.color]="pessoa.ativo ? 'blue' : 'red'">{{ pessoa.ativo ? 'Ativo' : 'Inativo' }}</td>
             <td class="col-acoes">
               <a pButton class="p-button" icon="pi pi-pencil"></a>
