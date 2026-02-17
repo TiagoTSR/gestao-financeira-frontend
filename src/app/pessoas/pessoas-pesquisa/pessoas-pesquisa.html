@@ -7,11 +7,19 @@
 
     <div class="grid-12 grid-fluid">
       <label>Nome</label>
-      <input pInputText type="text">
+      <input pInputText
+             [(ngModel)]="nome"
+             (keydown.enter)="pesquisarPorFiltro()" 
+             type="text"
+             placeholder="Digite o nome">
     </div>
 
     <div class="grid-12">
-      <button pButton type="submit" label="Pesquisar"></button>
+      <button pButton 
+        type="button" 
+        label="Pesquisar"
+        [disabled]="loading"
+        (click)="pesquisarPorFiltro()"></button>
     </div>
 
     <div class="grid">
