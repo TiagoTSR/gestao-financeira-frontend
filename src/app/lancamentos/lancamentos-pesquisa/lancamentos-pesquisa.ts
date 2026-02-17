@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
 import { Lancamento } from '../../models/lancamento.model';
 import { LancamentoService } from '../lancamento';
 import { LancamentoQueryParams } from '../../shared/lancamento-query-params.model';
@@ -13,7 +14,8 @@ import { LancamentoQueryParams } from '../../shared/lancamento-query-params.mode
     CommonModule,
     TableModule,
     InputTextModule,
-    ButtonModule
+    ButtonModule,
+    FormsModule
   ],
   templateUrl: './lancamentos-pesquisa.html',
   styleUrl: './lancamentos-pesquisa.scss',
@@ -26,6 +28,8 @@ export class LancamentosPesquisa {
 
   rows = 0;
   page = 0;
+
+  descricao = '';
 
   constructor(private lancamentoService: LancamentoService) {}
 
@@ -49,6 +53,11 @@ export class LancamentosPesquisa {
     });
   }
 
+  pesquisarPorFiltro(): void {
+    this.page = 0;
+    this.pesquisar(this.buildQuery(0, this.rows));
+  }
+
   aoMudarPagina(event: TableLazyLoadEvent): void {
     const first = event.first ?? 0;
 
@@ -60,6 +69,14 @@ export class LancamentosPesquisa {
     this.page = page;
     this.rows = rows;
 
-    this.pesquisar({ page, size });
+    this.pesquisar(this.buildQuery(page, size));
+  }
+
+  private buildQuery(page: number, size: number): LancamentoQueryParams {
+    return {
+      page,
+      size,
+      descricao: this.descricao?.trim() || undefined
+    };
   }
 }

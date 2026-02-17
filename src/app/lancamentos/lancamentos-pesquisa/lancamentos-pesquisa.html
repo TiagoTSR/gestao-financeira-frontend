@@ -7,7 +7,12 @@
 
     <div class="grid-12 grid-fluid">
       <label>Descrição</label>
-      <input pInputText type="text">
+      <input pInputText type="text"
+             name="descricao"
+             [ngModelOptions]="{ standalone: true }"
+             [(ngModel)]="descricao"
+             (keydown.enter)="pesquisarPorFiltro()"
+             placeholder="Digite a descrição">
     </div>
 
     <div class="grid-12">
@@ -19,7 +24,7 @@
     </div>
 
     <div class="grid-12">
-      <button pButton type="submit" label="Pesquisar"></button>
+      <button pButton type="submit" label="Pesquisar" (click)="pesquisarPorFiltro()"></button>
     </div>
 
     <div class="grid">
