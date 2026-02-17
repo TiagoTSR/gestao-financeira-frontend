@@ -11,8 +11,8 @@
 
   <ul class="navbar-menu" [hidden]="!exibindoMenu">
     <li class="navbar-usuario">Tiago Silva</li>
-    <li class="navbar-menuitem"><a href="#" (click)="exibindoMenu = false">Lançamentos</a></li>
-    <li class="navbar-menuitem"><a href="#" (click)="exibindoMenu = false">Pessoas</a></li>
+    <li class="navbar-menuitem"><a (click)="Lancamentos(); exibindoMenu = false">Lançamentos</a></li>
+    <li class="navbar-menuitem"><a (click)="Pessoas(); exibindoMenu = false">Pessoas</a></li>
     <li class="navbar-menuitem"><a href="#">Logout</a></li>
   </ul>
   
