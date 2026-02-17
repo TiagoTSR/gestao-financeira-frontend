@@ -17,7 +17,7 @@
 
     <div class="grid-12">
       <label style="display: block">Vencimento</label>
-      <mat-form-field appearance="outline" style="width: 200px;margin-top: 5px; margin-right: 10px;line-height: 10px">
+      <mat-form-field appearance="outline" style="width: 150px;margin-top: 5px; margin-right: 10px;line-height: 10px">
           <mat-label>De</mat-label>
           <input 
             matInput 
@@ -29,7 +29,7 @@
           <mat-datepicker #pickerDe></mat-datepicker>
         </mat-form-field>
 
-      <mat-form-field appearance="outline" style="width: 200px">
+      <mat-form-field appearance="outline" style="width: 150px;line-height: 10px">
           <mat-label>Até</mat-label>
           <input 
             matInput 
@@ -43,7 +43,22 @@
     </div>
 
     <div class="grid-12">
-      <button pButton type="submit" label="Pesquisar" (click)="pesquisarPorFiltro()"></button>
+      <button 
+        pButton
+        type="button" 
+        label="Pesquisar"
+        [disabled]="loading" 
+        (click)="pesquisarPorFiltro()">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="Limpar"
+        class="p-button-secondary"
+        style="margin-left: .5rem;color: white"
+        (click)="limparFiltro()"
+        >
+      </button>
     </div>
 
     <div class="grid">

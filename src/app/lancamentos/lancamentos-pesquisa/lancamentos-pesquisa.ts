@@ -96,6 +96,15 @@ export class LancamentosPesquisa {
     this.pesquisar(this.buildQuery(page, size));
   }
 
+  limparFiltro(): void {
+  this.descricao = '';
+  this.page = 0;
+  this.dataVencimentoDe = null;
+  this.dataVencimentoAte = null;
+
+  this.pesquisar({ page: 0, size: this.rows });
+  }
+
   private buildQuery(page: number, size: number): LancamentoQueryParams {
     return {
       page,

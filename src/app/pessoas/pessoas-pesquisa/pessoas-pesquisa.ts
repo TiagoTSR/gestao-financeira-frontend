@@ -78,6 +78,13 @@ export class PessoasPesquisa {
     this.pesquisar(this.buildQuery(page, size));
   }
 
+  limparFiltro(): void {
+  this.nome = '';
+  this.page = 0;
+
+  this.pesquisar({ page: 0, size: this.rows });
+  }
+
   private buildQuery(page: number, size: number): PessoaQueryParams {
     return {
       page,

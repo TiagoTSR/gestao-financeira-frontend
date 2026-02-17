@@ -19,7 +19,17 @@
         type="button" 
         label="Pesquisar"
         [disabled]="loading"
-        (click)="pesquisarPorFiltro()"></button>
+        (click)="pesquisarPorFiltro()">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="Limpar"
+        class="p-button-secondary"
+        style="margin-left: .5rem;color: white"
+        (click)="limparFiltro()"
+        >
+      </button>
     </div>
 
     <div class="grid">
