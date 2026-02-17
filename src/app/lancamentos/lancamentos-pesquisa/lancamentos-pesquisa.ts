@@ -7,6 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { Lancamento } from '../../models/lancamento.model';
 import { LancamentoService } from '../lancamento';
 import { LancamentoQueryParams } from '../../shared/lancamento-query-params.model';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-lancamentos-pesquisa',
@@ -15,12 +19,20 @@ import { LancamentoQueryParams } from '../../shared/lancamento-query-params.mode
     TableModule,
     InputTextModule,
     ButtonModule,
-    FormsModule
+    FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './lancamentos-pesquisa.html',
   styleUrl: './lancamentos-pesquisa.scss',
 })
 export class LancamentosPesquisa {
+
+  dataVencimentoDe: Date | null = null;
+  dataVencimentoAte: Date | null = null;
+
 
   lancamentos: Lancamento[] = [];
   totalRegistros = 0;
@@ -40,6 +52,18 @@ export class LancamentosPesquisa {
 
   pesquisar(params: LancamentoQueryParams): void {
     this.loading = true;
+
+  if (this.descricao?.trim()) {
+    params.descricao = this.descricao.trim();
+  }
+
+  if (this.dataVencimentoDe) {
+      params.dataVencimentoDe = this.toIsoDate(this.dataVencimentoDe);
+    }
+
+  if (this.dataVencimentoAte) {
+      params.dataVencimentoAte = this.toIsoDate(this.dataVencimentoAte);
+    }
 
     this.lancamentoService.findAll(params).subscribe({
       next: (response) => {
@@ -76,7 +100,18 @@ export class LancamentosPesquisa {
     return {
       page,
       size,
-      descricao: this.descricao?.trim() || undefined
+      descricao: this.descricao?.trim() || undefined,
+      dataVencimentoDe: this.toIsoDate(this.dataVencimentoDe),
+      dataVencimentoAte: this.toIsoDate(this.dataVencimentoAte),
     };
+  }
+
+  private toIsoDate(date: Date | null): string | undefined {
+  if (!date) return undefined;
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
   }
 }

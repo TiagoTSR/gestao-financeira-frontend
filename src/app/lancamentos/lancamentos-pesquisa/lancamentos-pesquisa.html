@@ -17,10 +17,29 @@
 
     <div class="grid-12">
       <label style="display: block">Vencimento</label>
-      <input pInputText type="text" style="width: 95px">
+      <mat-form-field appearance="outline" style="width: 200px;margin-top: 5px; margin-right: 10px;line-height: 10px">
+          <mat-label>De</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="pickerDe"
+            [(ngModel)]="dataVencimentoDe"
+            name="dataVencimentoDe"
+            placeholder="dd/mm/aaaa">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerDe"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDe></mat-datepicker>
+        </mat-form-field>
 
-      <label> até </label>
-      <input pInputText type="text" style="width: 95px">
+      <mat-form-field appearance="outline" style="width: 200px">
+          <mat-label>Até</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="pickerAte"
+            [(ngModel)]="dataVencimentoAte"
+            name="dataVencimentoAte"
+            placeholder="dd/mm/aaaa">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerAte"></mat-datepicker-toggle>
+          <mat-datepicker #pickerAte></mat-datepicker>
+        </mat-form-field>
     </div>
 
     <div class="grid-12">
