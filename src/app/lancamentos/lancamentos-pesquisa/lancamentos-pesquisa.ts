@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-lancamentos-pesquisa',
@@ -114,6 +115,33 @@ export class LancamentosPesquisa {
       dataVencimentoAte: this.toIsoDate(this.dataVencimentoAte),
     };
   }
+
+  delete(lancamento: Lancamento): void {
+  Swal.fire({
+    title: `
+    <div style="line-height:1; margin-bottom: 0.3rem;">
+      Tem certeza que deseja deletar<br>este registro?
+    </div>
+  `,
+    icon: 'warning',
+    showConfirmButton: true,
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Não'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.lancamentoService.delete(lancamento.id!).subscribe({
+        next: () => {
+          Swal.fire('Deletado!', 'Lançamento deletado com sucesso.', 'success');
+          this.pesquisar({ page: 0, size: this.rows });
+        },
+        error: (err) => {
+          console.error('Erro ao excluir lançamento:', err);
+        }
+      });
+    }
+  });
+}
 
   private toIsoDate(date: Date | null): string | undefined {
   if (!date) return undefined;
