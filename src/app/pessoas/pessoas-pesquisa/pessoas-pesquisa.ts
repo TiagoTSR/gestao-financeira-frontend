@@ -7,6 +7,7 @@ import { Pessoa } from '../../models/pessoa.model';
 import { PessoaService } from '../pessoa';
 import { PessoaQueryParams } from '../../shared/pessoa-query-params.model';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -83,6 +84,47 @@ export class PessoasPesquisa {
   this.page = 0;
 
   this.pesquisar({ page: 0, size: this.rows });
+  }
+
+  delete(pessoa: Pessoa): void {
+
+    Swal.fire({
+      title:  `
+    <div style="line-height:1; margin-bottom: 0.5rem;">
+      Tem certeza que deseja deletar<br>este registro?
+    </div>
+  `,
+      icon: 'warning',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        this.pessoaService.delete(pessoa.id!).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Deletado com sucesso!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+
+            this.pesquisar({ page: 0, size: this.rows });
+          },
+          error: (err) => {
+            console.error('Erro ao excluir pessoa:', err);
+
+            Swal.fire({
+              title: 'Ação não permitida',
+              text: 'Não foi possível excluir a pessoa.\nSe houver lançamentos vinculados, deixa pesssoa inativa ou exclua os lançamentos.Para excluir a pessoa é necessario excluir os lancamentos associados antes',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    });
   }
 
   private buildQuery(page: number, size: number): PessoaQueryParams {
