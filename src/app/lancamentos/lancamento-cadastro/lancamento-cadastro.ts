@@ -14,6 +14,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import localePt from '@angular/common/locales/pt';
 import { MessageComponent } from '../../message/message/message';
+import { TipoLancamento } from '../../models/tipoLancamento.model';
+import { CategoriaService } from '../../categorias/categoria';
+import { PessoaService } from '../../pessoas/pessoa';
 registerLocaleData(localePt);
 
 
@@ -44,22 +47,49 @@ export class LancamentoCadastro {
   dataRecebimento: Date | undefined;
 
   tipos = [
-    { label: 'Receita', value: 'RECEITA' },
-    { label: 'Despesa', value: 'DESPESA' },
+    { label: 'Receita', value: TipoLancamento.RECEITA },
+    { label: 'Despesa', value: TipoLancamento.DESPESA }
   ];
+  
+  tipoSelecionado: TipoLancamento = TipoLancamento.DESPESA;
+  
+
+  categorias: { label: string; value: number }[] = [];
+  pessoas: { label: string; value: number }[] = [];
 
   categoriaSelecionada!: number;
   pessoaSelecionada!: number;
 
-  categorias = [
-    { label: 'Alimentação', value: 1 },
-    { label: 'Transporte', value: 2 }
-  ];
+ constructor(
+    private categoriaService: CategoriaService,
+    private pessoaService: PessoaService
+  ) {}
 
-  pessoas = [
-    { label: 'João da Silva', value: 4 },
-    { label: 'Sebastião Souza', value: 9 },
-    { label: 'Maria Abadia', value: 3 }
-  ];
+  ngOnInit(): void {
+    this.carregarCategorias();
+    this.carregarPessoas();
+  }
+
+  private carregarCategorias(): void {
+    this.categoriaService.findAllSimple().subscribe({
+      next: (dados) => {
+        this.categorias = dados.map(cat => ({
+          label: cat.nome,
+          value: cat.id
+        }));
+      }
+    });
+  }
+
+  private carregarPessoas(): void {
+  this.pessoaService.findAllSimple().subscribe({
+    next: (dados) => {
+      this.pessoas = dados.map(p => ({
+        label: p.nome,
+        value: p.id
+      }));
+    }
+  });
+}
   
 }

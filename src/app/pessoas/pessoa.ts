@@ -18,6 +18,10 @@ export class PessoaService {
     return this.http.get<PageResponse<Pessoa>>(`${this.apiUrl}/listAll`, { params: httpParams });
   }
 
+  findAllSimple(): Observable<Pessoa[]> {
+  return this.http.get<Pessoa[]>(this.apiUrl + '/listAllSimple');
+  }
+
   findById(id: number): Observable<Pessoa> {
     return this.http.get<Pessoa>(this.apiUrl + '/findById/' + id);
   }
