@@ -49,11 +49,18 @@
       <div class="col-12 md:col-6 p-fluid">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Categoria</mat-label>
-          <mat-select
-          name="categoria" [(ngModel)]="categoriaSelecionada">
-            <mat-option *ngFor="let cat of categorias" [value]="cat.value">
-              {{ cat.label }}
-            </mat-option>
+           <mat-select name="categoria" [(ngModel)]="categoriaSelecionada">
+            <mat-option>
+      <ngx-mat-select-search
+          [formControl]="categoriaFilterCtrl"
+          placeholderLabel="Pesquisar categoria"
+          noEntriesFoundLabel="Nenhuma categoria encontrada"
+          (keydown.enter)="onEnterSelectFirst($event, 'categoria')">
+        </ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngFor="let cat of filteredCategorias" [value]="cat.value">
+      {{ cat.label }}
+    </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -61,8 +68,16 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Pessoa</mat-label>
           <mat-select name="pessoa" [(ngModel)]="pessoaSelecionada">
-            <mat-option *ngFor="let pessoa of pessoas" [value]="pessoa.value">
-              {{ pessoa.label }}
+            <mat-option>
+        <ngx-mat-select-search
+          [formControl]="pessoaFilterCtrl"
+          placeholderLabel="Pesquisar pessoa"
+          noEntriesFoundLabel="Nenhuma pessoa encontrada"
+          (keydown.enter)="onEnterSelectFirst($event, 'pessoa')">
+        </ngx-mat-select-search>
+      </mat-option>
+            <mat-option *ngFor="let pessoa of filteredPessoas" [value]="pessoa.value">
+        {{ pessoa.label }}
             </mat-option>
           </mat-select>
         </mat-form-field>
