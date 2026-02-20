@@ -1,3 +1,5 @@
+import { TipoLancamento } from './tipoLancamento.model';
+
 export interface Lancamento {
   id: number;
   descricao: string;
@@ -5,10 +7,7 @@ export interface Lancamento {
   dataPagamento: Date;
   valor: number;
   observacao: string;
-  tipo: 'RECEITA' | 'DESPESA';
-  
-  categoriaId: number;
-  categoriaNome: string;
+  tipo: TipoLancamento;
   pessoaId: number;
-  pessoaNome: string;
+  categoriaId: number | null;
 }

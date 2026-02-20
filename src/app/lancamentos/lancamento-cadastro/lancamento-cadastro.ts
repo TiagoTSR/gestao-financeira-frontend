@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { FormControl, FormsModule,NgForm,ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FluidModule } from 'primeng/fluid';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -20,6 +20,10 @@ import { PessoaService } from '../../pessoas/pessoa';
 import { takeUntil, Subject } from 'rxjs';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 registerLocaleData(localePt);
+
+import { LancamentoService } from '../lancamento';
+import { Lancamento } from '../../models/lancamento.model';
+import Swal from 'sweetalert2'
 
 
 @Component({
@@ -47,10 +51,14 @@ registerLocaleData(localePt);
 })
 export class LancamentoCadastro implements OnInit, OnDestroy {
 
+  @ViewChild('form') formulario!: NgForm;
+
   private _onDestroy = new Subject<void>();
 
   dataVencimento: Date | undefined;
   dataRecebimento: Date | undefined;
+
+  descricao: string | undefined;
 
   tipos = [
     { label: 'Receita', value: TipoLancamento.RECEITA },
@@ -63,8 +71,8 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
   categorias: { label: string; value: number }[] = [];
   pessoas: { label: string; value: number }[] = [];
 
-  categoriaSelecionada!: number;
-  pessoaSelecionada!: number;
+  categoriaSelecionada?: number;
+  pessoaSelecionada?: number;
 
   filteredCategorias: { label: string; value: number }[] = [];
   filteredPessoas: { label: string; value: number }[] = [];
@@ -74,7 +82,8 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
 
  constructor(
     private categoriaService: CategoriaService,
-    private pessoaService: PessoaService
+    private pessoaService: PessoaService,
+    private lancamentoService: LancamentoService
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +100,6 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
         }));
      this.filteredCategorias = [...this.categorias];
         
-        // Configurar filtro
         this.categoriaFilterCtrl.valueChanges
           .pipe(takeUntil(this._onDestroy))
           .subscribe(() => {
@@ -110,7 +118,6 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
       }));
    this.filteredPessoas = [...this.pessoas];
         
-        // Configurar filtro
         this.pessoaFilterCtrl.valueChanges
           .pipe(takeUntil(this._onDestroy))
           .subscribe(() => {
@@ -125,7 +132,6 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
       return;
     }
     
-    // Obter o termo de busca
     let search = this.categoriaFilterCtrl.value;
     if (!search) {
       this.filteredCategorias = [...this.categorias];
@@ -143,7 +149,6 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
       return;
     }
     
-    // Obter o termo de busca
     let search = this.pessoaFilterCtrl.value;
     if (!search) {
       this.filteredPessoas = [...this.pessoas];
@@ -156,10 +161,47 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
     );
   }
 
+  salvar(form: any): void {
+    if (form.invalid) {
+      return;
+    }
+
+    const lancamento: Lancamento = {
+      id: 0,
+      tipo: this.tipoSelecionado,
+      descricao: form.value.descricao,
+      dataVencimento: this.dataVencimento!,
+      dataPagamento: this.dataRecebimento!,
+      valor: form.value.valor,
+      observacao: form.value.observacao,
+      pessoaId: this.pessoaSelecionada!,
+      categoriaId: this.categoriaSelecionada!
+    };
+
+    this.lancamentoService.save(lancamento).subscribe({
+      next: () => {
+       Swal.fire({
+             title: 'Salvo com sucesso!',
+             icon: 'success',
+             cancelButtonText: 'OK',
+           })
+        form.resetForm();
+        this.tipoSelecionado = TipoLancamento.DESPESA;
+        this.dataVencimento = undefined;
+        this.dataRecebimento = undefined;
+        this.categoriaSelecionada = undefined as any;
+        this.pessoaSelecionada = undefined as any;
+        this.descricao = undefined;
+      },
+      error: (err) => {
+        console.error('Erro ao salvar lançamento', err);
+      }
+    });
+  }
+
   onEnterSelectFirst(event: Event, target: 'categoria' | 'pessoa'): void {
   const keyboardEvent = event as KeyboardEvent;
 
-  // segurança extra caso o tipo não seja realmente KeyboardEvent
   if (!keyboardEvent || keyboardEvent.key !== 'Enter') {
     return;
   }
@@ -188,7 +230,7 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
 private closeMatSelectFromEvent(event: Event): void {
   const targetEl = event.target as HTMLElement | null;
   (targetEl as HTMLInputElement | null)?.blur?.();
-  document.body.click(); // fecha o overlay na prática
+  document.body.click();
 }
 
   ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 <div class="container">
-  <form>
+  <form #form="ngForm" (ngSubmit)="salvar(form)">
     <div class="grid">
       <div class="col-12">
         <h1>Novo Lançamento</h1>
@@ -18,7 +18,8 @@
           <input 
             name="vencimento" matInput 
             [matDatepicker]="pickerVencimento"
-            [(ngModel)]="dataVencimento">
+            [(ngModel)]="dataVencimento"
+            [required]="true">
           <mat-datepicker-toggle matIconSuffix [for]="pickerVencimento"></mat-datepicker-toggle>
           <mat-datepicker #pickerVencimento></mat-datepicker>
         </mat-form-field>
@@ -36,7 +37,7 @@
       </div>
       <div class="col-12 md:col-9 p-fluid">
         <label>Descrição</label>
-        <input pInputText name="descricao" ngModel #descricao="ngModel" [required]="true" minlength="5" type="text">
+        <input pInputText name="descricao" ngModel #descricao="ngModel" [required]="true" minlength="5" [maxLength]="30" type="text">
         <app-message [control]="descricao.control" error="required" text="Informe uma descrição"></app-message>
         <app-message [control]="descricao.control" error="minlength"
           text="Mínimo de {{ descricao.errors?.['minlength']?.requiredLength }} caracteres. Você digitou apenas {{ descricao.errors?.['minlength']?.actualLength }}">
@@ -44,12 +45,13 @@
       </div>
       <div class="col-12 md:col-3 p-fluid">
         <label>Valor</label>
-        <p-inputNumber name="valor" mode="currency" currency="BRL" locale="pt-BR" placeholder="0,00"></p-inputNumber>
+        <p-inputNumber name="valor" ngModel mode="currency" 
+               currency="BRL" locale="pt-BR" [required]="true"></p-inputNumber>
       </div>
       <div class="col-12 md:col-6 p-fluid">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Categoria</mat-label>
-           <mat-select name="categoria" [(ngModel)]="categoriaSelecionada">
+           <mat-select name="categoria" [(ngModel)]="categoriaSelecionada" [required]="true">
             <mat-option>
       <ngx-mat-select-search
           [formControl]="categoriaFilterCtrl"
@@ -67,7 +69,7 @@
       <div class="col-12 md:col-6 p-fluid">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Pessoa</mat-label>
-          <mat-select name="pessoa" [(ngModel)]="pessoaSelecionada">
+          <mat-select name="pessoa" [(ngModel)]="pessoaSelecionada" [required]="true">
             <mat-option>
         <ngx-mat-select-search
           [formControl]="pessoaFilterCtrl"
@@ -84,10 +86,10 @@
       </div>
       <div class="col-12 p-fluid">
         <label>Observação</label>
-        <textarea pInputTextarea rows="3"></textarea>
+        <textarea pInputTextarea name="observacao" rows="3" [maxLength]="100"></textarea>
       </div>
       <div class="col-12">
-        <button pButton type="submit" icon="pi pi-check" label="Salvar"></button>
+        <button pButton type="submit" icon="pi pi-check" label="Salvar" [disabled]="form.invalid"></button>
         <button pButton type="button" icon="pi pi-plus"  label="Novo" class="p-button-info"></button>
         <button pButton type="button" 
                 label="Voltar" 
