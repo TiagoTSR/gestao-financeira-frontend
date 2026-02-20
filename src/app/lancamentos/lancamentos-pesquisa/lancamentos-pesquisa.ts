@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -44,7 +45,7 @@ export class LancamentosPesquisa {
 
   descricao = '';
 
-  constructor(private lancamentoService: LancamentoService) {}
+  constructor(private lancamentoService: LancamentoService,private router: Router) {}
 
   ngOnInit(): void {
 
@@ -81,6 +82,10 @@ export class LancamentosPesquisa {
   pesquisarPorFiltro(): void {
     this.page = 0;
     this.pesquisar(this.buildQuery(0, this.rows));
+  }
+
+  editar(lancamento: Lancamento): void {
+    this.router.navigate(['/admin/lancamentos/cadastro', lancamento.id]);
   }
 
   aoMudarPagina(event: TableLazyLoadEvent): void {
