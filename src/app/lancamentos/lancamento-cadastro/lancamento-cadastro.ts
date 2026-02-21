@@ -1,3 +1,4 @@
+import { Lancamento } from './../../models/lancamento.model';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormsModule,NgForm,ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -22,8 +23,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 registerLocaleData(localePt);
 
 import { LancamentoService } from '../lancamento';
-import { Lancamento } from '../../models/lancamento.model';
 import Swal from 'sweetalert2'
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -53,12 +54,19 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
 
   @ViewChild('form') formulario!: NgForm;
 
+  public TipoLancamento = TipoLancamento;
+  idLancamento?: number;
+  editando = false;
+
   private _onDestroy = new Subject<void>();
 
   dataVencimento: Date | undefined;
   dataRecebimento: Date | undefined;
 
   descricao: string | undefined;
+
+  valorLancamento: number | undefined;
+  observacao: string | undefined;
 
   tipos = [
     { label: 'Receita', value: TipoLancamento.RECEITA },
@@ -83,21 +91,26 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
  constructor(
     private categoriaService: CategoriaService,
     private pessoaService: PessoaService,
-    private lancamentoService: LancamentoService
+    private lancamentoService: LancamentoService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.carregarCategorias();
     this.carregarPessoas();
+     const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.idLancamento = Number(id);
+      this.editando = true;
+      this.carregarLancamento(this.idLancamento);
+    }
   }
 
   private carregarCategorias(): void {
     this.categoriaService.findAllSimple().subscribe({
       next: (dados) => {
-        this.categorias = dados.map(cat => ({
-          label: cat.nome,
-          value: cat.id
-        }));
+     this.categorias = dados.map(c => ({ label: c.nome, value: c.id }));
      this.filteredCategorias = [...this.categorias];
         
         this.categoriaFilterCtrl.valueChanges
@@ -112,10 +125,7 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
   private carregarPessoas(): void {
   this.pessoaService.findAllSimple().subscribe({
     next: (dados) => {
-      this.pessoas = dados.map(p => ({
-        label: p.nome,
-        value: p.id
-      }));
+   this.pessoas = dados.map(p => ({ label: p.nome, value: p.id }));
    this.filteredPessoas = [...this.pessoas];
         
         this.pessoaFilterCtrl.valueChanges
@@ -123,6 +133,27 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
           .subscribe(() => {
             this.filtrarPessoas();
           });
+      }
+    });
+  }
+
+  private carregarLancamento(id: number): void {
+    this.lancamentoService.findById(id).subscribe({
+      next: (lancamento) => {
+        this.tipoSelecionado = lancamento.tipo;
+        this.dataVencimento = this.parseDate(lancamento.dataVencimento);
+        this.dataRecebimento = lancamento.dataPagamento
+          ? this.parseDate(lancamento.dataPagamento)
+          : undefined;
+
+        this.categoriaSelecionada = lancamento.categoriaId;
+      this.pessoaSelecionada = lancamento.pessoaId;
+        this.valorLancamento = lancamento.valor;
+        this.observacao = lancamento.observacao;
+         setTimeout(() => {
+          (document.querySelector('[name="descricao"]') as HTMLInputElement).value =
+            lancamento.descricao;
+        });
       }
     });
   }
@@ -166,37 +197,57 @@ export class LancamentoCadastro implements OnInit, OnDestroy {
       return;
     }
 
-    const lancamento: Lancamento = {
-      id: 0,
+    const Lancamento: Lancamento = {
+      id: this.idLancamento!,
       tipo: this.tipoSelecionado,
       descricao: form.value.descricao,
-      dataVencimento: this.dataVencimento!,
-      dataPagamento: this.dataRecebimento!,
+      dataVencimento: this.toIsoDate(this.dataVencimento!)!,
+      dataPagamento: this.toIsoDate(this.dataRecebimento)!,
       valor: form.value.valor,
       observacao: form.value.observacao,
       pessoaId: this.pessoaSelecionada!,
-      categoriaId: this.categoriaSelecionada!
+      categoriaId: this.categoriaSelecionada!,
     };
 
-    this.lancamentoService.save(lancamento).subscribe({
-      next: () => {
-       Swal.fire({
-             title: 'Salvo com sucesso!',
-             icon: 'success',
-             cancelButtonText: 'OK',
-           })
-        form.resetForm();
-        this.tipoSelecionado = TipoLancamento.DESPESA;
-        this.dataVencimento = undefined;
-        this.dataRecebimento = undefined;
-        this.categoriaSelecionada = undefined as any;
-        this.pessoaSelecionada = undefined as any;
-        this.descricao = undefined;
-      },
-      error: (err) => {
-        console.error('Erro ao salvar lançamento', err);
-      }
-    });
+    const request$ = this.editando
+    ? this.lancamentoService.update(Lancamento)
+    : this.lancamentoService.save(Lancamento);
+
+    request$.subscribe({
+    next: () => {
+      Swal.fire({
+        title: this.editando
+          ? 'Edição realizada com sucesso!'
+          : 'Salvo com sucesso!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        this.router.navigate(['/admin/lancamentos']);
+      });
+    },
+    error: () => {
+      Swal.fire({
+        title: 'Erro ao salvar',
+        text: 'Não foi possível salvar o lançamento. Tente novamente.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  });
+  }
+
+  private toIsoDate(date: Date | undefined | null): string | undefined {
+  if (!date) return undefined;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+  }
+
+  private parseDate(dateStr: any): Date {
+    if (!dateStr) return new Date();
+    const [year, month, day] = String(dateStr).split('-').map(Number);
+    return new Date(year, month - 1, day);
   }
 
   onEnterSelectFirst(event: Event, target: 'categoria' | 'pessoa'): void {
