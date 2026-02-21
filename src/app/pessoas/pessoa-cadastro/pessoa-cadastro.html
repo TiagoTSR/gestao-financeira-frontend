@@ -1,9 +1,9 @@
 <div class="container">
-    <form autocomplete="off">
+    <form #form="ngForm" (ngSubmit)="salvar(form)">
   
       <div class="grid">
         <div class="col-12">
-          <h1>Nova Pessoa</h1>
+          <h1>{{ editando ? 'Editar Pessoa' : 'Nova Pessoa' }}</h1>
         </div>
   
         <div class="col-12 p-fluid">
@@ -13,16 +13,18 @@
                 type="text"
                 appOnlyLettersName
                 [maxLength]="20"
-                placeholder="Digite seu nome" ngModel #nome="ngModel" [required]="true" minlength="5">
-          <app-message [control]="nome.control" error="required" text="Nome é obrigatório"></app-message>
-          <app-message [control]="nome.control" error="minlength" text="Nome deve ter no mínimo 5 caracteres">
-          </app-message>
+                placeholder="Digite seu nome" ngModel #nome="ngModel" required minlength="5">
+
+          <app-message [control]="nome.control" error="required"
+            text="Informe o nome"></app-message>
+          <app-message [control]="nome.control" error="minlength"
+            text="Mínimo de {{ nome.errors?.['minlength']?.requiredLength }} caracteres"></app-message>
         </div>
   
         <div class="col-12 md:col-9 p-fluid">
           <label>Logradouro</label>
-          <input name="logradouro" pInputText appAddress [maxLength]="50" type="text"
-          ngModel #logradouro="ngModel" [required]="true">
+         <input name="logradouro" pInputText appAddress [maxLength]="50" type="text"
+          ngModel #logradouro="ngModel" required>
 
           <app-message [control]="logradouro.control" error="required"
             text="Informe o logradouro"></app-message>
@@ -30,8 +32,10 @@
   
         <div class="col-12 md:col-3 p-fluid">
           <label>Número</label>
-          <input pInputText name="numero" mask="00000" [maxLength]="3" ngModel #numero="ngModel" placeholder="00000" [required]="true">
-          <app-message [control]="numero.control" error="required" text="Número é obrigatório"></app-message>
+          <input name="numero" pInputText mask="000"type="text" [maxLength]="3" ngModel #numero="ngModel" [required]="true">
+
+          <app-message [control]="numero.control" error="required"
+            text="Informe o número"></app-message>
         </div>
   
         <div class="col-12 md:col-4 p-fluid">
@@ -41,7 +45,7 @@
   
         <div class="col-12 md:col-4 p-fluid">
           <label>Bairro</label>
-          <input name="bairro" pInputText appAddress [maxLength]="50" type="text" ngModel #bairro="ngModel" [required]="true">
+          <input name="bairro" pInputText appAddress [maxLength]="50" type="text" ngModel #bairro="ngModel" required>
 
           <app-message [control]="bairro.control" error="required"
             text="Informe o bairro"></app-message>
@@ -49,27 +53,29 @@
   
         <div class="col-12 md:col-4 p-fluid">
           <label>CEP</label>
-          <input pInputText name="cep" mask="00000-000" placeholder="00000-000">
+          <input pInputText name="cep" ngModel #cep="ngModel" mask="00000-000">
         </div>
   
         <div class="col-12 md:col-6 p-fluid">
           <label>Cidade</label>
           <input name="cidade" pInputText appOnlyLettersName
-                [maxLength]="20" type="text" ngModel #cidade="ngModel" [required]="true" minlength="3">
+                [maxLength]="20" type="text" ngModel #cidade="ngModel" required minlength="3">
           <app-message [control]="cidade.control" error="required"
             text="Informe a cidade"></app-message>
         </div>
   
         <div class="col-12 md:col-6 p-fluid">
           <label>Estado</label>
-           <input name="estado" pInputText appState type="text" ngModel #estado="ngModel" [required]="true" minlength="2" maxlength="2">
+          <input name="estado" pInputText appState type="text" ngModel #estado="ngModel" required minlength="2" maxlength="2">
           <app-message [control]="estado.control" error="required"
             text="Informe o estado"></app-message>
         </div>
   
         <div class="col-12">
-          <button pButton type="submit" icon="pi pi-check" label="Salvar"></button>
+          <button pButton type="submit" icon="pi pi-check" [label]="editando ? 'Atualizar' : 'Salvar'"
+          [disabled]="form.invalid" ></button>
           <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info"></button>
+  
           <button pButton type="button" 
                 label="Voltar" 
                 icon="pi pi-arrow-left">         
