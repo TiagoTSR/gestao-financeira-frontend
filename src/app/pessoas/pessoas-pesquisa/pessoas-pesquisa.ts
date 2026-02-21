@@ -7,6 +7,7 @@ import { Pessoa } from '../../models/pessoa.model';
 import { PessoaService } from '../pessoa';
 import { PessoaQueryParams } from '../../shared/pessoa-query-params.model';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 
@@ -35,7 +36,7 @@ export class PessoasPesquisa {
     cidade = '';
     ativo: boolean | null = null;
   
-    constructor(private pessoaService: PessoaService) {}
+    constructor(private pessoaService: PessoaService,private router: Router) {}
   
     ngOnInit(): void {
       this.pesquisar({ page: 0, size: this.rows });
@@ -78,6 +79,10 @@ export class PessoasPesquisa {
 
     this.pesquisar(this.buildQuery(page, size));
   }
+
+  editar(pessoa: Pessoa): void {
+      this.router.navigate(['/admin/pessoas/cadastro', pessoa.id]);
+    }
 
   limparFiltro(): void {
   this.nome = '';

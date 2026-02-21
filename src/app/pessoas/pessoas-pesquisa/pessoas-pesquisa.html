@@ -56,7 +56,7 @@
             <td class="col-valor-content">{{ pessoa.endereco?.estado }}</td>
             <td class="col-valor-content" [style.color]="pessoa.ativo ? 'blue' : 'red'">{{ pessoa.ativo ? 'Ativo' : 'Inativo' }}</td>
             <td class="col-acoes">
-              <a pButton class="p-button" icon="pi pi-pencil"></a>
+              <a pButton class="p-button" icon="pi pi-pencil" (click)="editar(pessoa)"></a>
               <button pButton class="delete-btn" icon="pi pi-trash" (click)="delete(pessoa)"></button>
             </td>
           </tr>
