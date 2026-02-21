@@ -74,11 +74,11 @@
         <div class="col-12">
           <button pButton type="submit" icon="pi pi-check" [label]="editando ? 'Atualizar' : 'Salvar'"
           [disabled]="form.invalid" ></button>
-          <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info"></button>
+          <button pButton type="button" label="Novo" icon="pi pi-plus"  (click)="novo()" class="p-button-info"></button>
   
           <button pButton type="button" 
                 label="Voltar" 
-                icon="pi pi-arrow-left">         
+                icon="pi pi-arrow-left" (click)="voltar()">         
           </button>
         </div>
       </div>

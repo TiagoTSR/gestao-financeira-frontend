@@ -288,4 +288,25 @@ private closeMatSelectFromEvent(event: Event): void {
     this._onDestroy.next();
     this._onDestroy.complete();
   }
+
+  limparFormulario(): void {
+    this.formulario.resetForm();
+
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach((input) => {
+      input.value = '';
+    });
+
+    this.idLancamento = undefined;
+    this.editando = false;
+  }
+
+  novo(): void {
+    this.limparFormulario();
+    this.router.navigate(['/admin/lancamentos/cadastro']);
+  }
+
+  voltar(): void {
+    this.router.navigate(['/admin/lancamentos']);
+  }
 }

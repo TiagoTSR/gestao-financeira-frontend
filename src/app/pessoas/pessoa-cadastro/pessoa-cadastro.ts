@@ -148,4 +148,12 @@ export class PessoaCadastro implements OnInit {
     this.editando = false;
   }
 
+  novo(): void {
+    this.limparFormulario();
+    this.router.navigate(['/admin/pessoas/cadastro']);
+  }
+
+  voltar(): void {
+    this.router.navigate(['/admin/pessoas']);
+  }
 }

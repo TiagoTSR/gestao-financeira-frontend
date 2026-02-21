@@ -132,6 +132,10 @@ export class PessoasPesquisa {
     });
   }
 
+  novo(): void {
+    this.router.navigate(['/admin/pessoas/cadastro']);
+  }
+
   private buildQuery(page: number, size: number): PessoaQueryParams {
     return {
       page,

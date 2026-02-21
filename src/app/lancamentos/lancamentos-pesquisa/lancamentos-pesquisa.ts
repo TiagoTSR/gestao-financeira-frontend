@@ -148,6 +148,10 @@ export class LancamentosPesquisa {
   });
 }
 
+novo(): void {
+    this.router.navigate(['/admin/lancamentos/cadastro']);
+  }
+
   private toIsoDate(date: Date | null): string | undefined {
   if (!date) return undefined;
 
