@@ -3,17 +3,15 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
+import { AuthService } from './auth.service';
 
 export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  const token = sessionStorage.getItem('token'); 
-  
-  if (token && !router.url.includes('/login')) {
-    request = request.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
-  }
+  request = request.clone({
+    withCredentials: true
+  });
 
   return next(request).pipe(
     catchError((err: any) => {
@@ -27,7 +25,7 @@ export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
               text: 'Sua sessão expirou. Por favor, faça login novamente.',
               timer: 3000
             });
-            sessionStorage.removeItem('token');
+            authService.removerDados();
             router.navigate(['/login']);
             break;
 

@@ -24,7 +24,7 @@ export class loginComponent {
   };
 
   constructor(){
-    this.authService.removerToken();
+    this.authService.removerDados();
   }
 
   logar() {
@@ -38,9 +38,9 @@ export class loginComponent {
     next: (res) => { 
       this.loading = false;
 
-      if (res && res.token) {
-        this.authService.addToken(res.token); 
-      }
+      if (res && res.usuario) {
+          this.authService.saveUsuario(res.usuario); 
+        }
 
       this.gerarToast().fire({ icon: "success", title: "Seja bem-vindo!" });
       this.router.navigate(['/admin/lancamentos']);
