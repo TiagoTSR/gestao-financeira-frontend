@@ -15,35 +15,32 @@ export class AuthService {
   private readonly API = "http://localhost:8080/api/login";
 
   logar(login: Login): Observable<LoginResponse> {
-  return this.http.post<LoginResponse>(this.API, login);
+    return this.http.post<LoginResponse>(this.API, login, { withCredentials: true });
+  }
+
+  saveUsuario(usuario: Usuario) {
+    sessionStorage.setItem('usuario_dados', JSON.stringify(usuario));
   }
 
   logout() {
-  sessionStorage.clear();
+  this.removerDados();
   }
   
   addToken(token: string) {
     sessionStorage.setItem('token', token);
   }
 
-  removerToken() {
+  removerDados() {
     sessionStorage.clear();
   }
 
-  getToken() {
-    return sessionStorage.getItem('token');
+ getUsuarioLogado(): Usuario | null {
+    const data = sessionStorage.getItem('usuario_dados');
+    return data ? JSON.parse(data) : null;
   }
 
-  getUsuarioLogado(): Usuario | null {
-    const token = this.getToken();
-    if (token) {
-      try {
-        return jwtDecode<Usuario>(token);
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
+  isLogado(): boolean {
+    return this.getUsuarioLogado() !== null;
   }
 
   hasRole(role: string): boolean {
