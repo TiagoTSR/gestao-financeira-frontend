@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../AuthService';
+import { AuthService } from '../../auth/auth.service';
 import { Login } from '../../models/login.model';
 import Swal from 'sweetalert2'
 
