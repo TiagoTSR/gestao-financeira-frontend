@@ -12,17 +12,24 @@
                 <h1>Login</h1>
                 
                 <div class="col-12">
-                    <input type="email" name="usuario" [(ngModel)]="usuario" placeholder="E-mail"  required>
+                    <input type="email"
+                            name="username"
+                            [(ngModel)]="login.username"
+                            placeholder="E-mail"
+                            required>
                 </div>
                 
                 <div class="col-12">
-                    <input type="password" name="senha" [(ngModel)]="senha" placeholder="Senha" required>
+                    <input type="password"
+                            name="password"
+                            [(ngModel)]="login.password"
+                            placeholder="Senha" required>
                 </div>
                 
                 <div class="col-12">
-                    <button type="submit" (click)="Login()">Login</button>
+                    <button type="submit" (click)="logar()">Login</button>
                 </div>
-            </div>
+             </div>
         </form>
     </div>
 </body>
