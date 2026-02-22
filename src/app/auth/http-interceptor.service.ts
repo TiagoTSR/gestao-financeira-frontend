@@ -44,7 +44,7 @@ export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
             console.error('Recurso não encontrado:', err.url);
             break;
 
-          case 0:
+          case 500:
             Swal.fire({
               icon: 'error',
               title: 'Servidor Offline',
