@@ -15,25 +15,26 @@ export class PessoaService {
 
   findAll(params?: PessoaQueryParams): Observable<PageResponse<Pessoa>> {
     const httpParams = this.toHttpParams(params);
-    return this.http.get<PageResponse<Pessoa>>(`${this.apiUrl}/listAll`, { params: httpParams });
+    return this.http.get<PageResponse<Pessoa>>(`${this.apiUrl}/listAll`, { params: httpParams, withCredentials: true });
   }
 
   findAllSimple(): Observable<Pessoa[]> {
-  return this.http.get<Pessoa[]>(this.apiUrl + '/listAllSimple');
+  return this.http.get<Pessoa[]>(this.apiUrl + '/listAllSimple', { withCredentials: true });
   }
 
   findById(id: number): Observable<Pessoa> {
-    return this.http.get<Pessoa>(this.apiUrl + '/findById/' + id);
+    return this.http.get<Pessoa>(this.apiUrl + '/findById/' + id, { withCredentials: true });
   }
 
   save(pessoa: Pessoa): Observable<Pessoa> {
-    return this.http.post<Pessoa>(this.apiUrl + '/save', pessoa);
+    return this.http.post<Pessoa>(this.apiUrl + '/save', pessoa, { withCredentials: true });
   }
 
   update(pessoa: Pessoa): Observable<Pessoa> {
     return this.http.put<Pessoa>(
       this.apiUrl + '/update/' + pessoa.id,
-      pessoa
+      pessoa,
+      { withCredentials: true }
     );
   }
 

@@ -39,15 +39,14 @@ export class loginComponent {
       this.loading = false;
 
       if (res && res.usuario) {
-          this.authService.saveUsuario(res.usuario); 
-        }
+        this.authService.saveUsuario(res.usuario); 
+      }
 
       this.gerarToast().fire({ icon: "success", title: "Seja bem-vindo!" });
       this.router.navigate(['/admin/lancamentos']);
     },
     error: (erro) => {
       this.loading = false;
-    
       Swal.fire('Usuário ou senha incorretos!', '', 'error');
     }
   });
