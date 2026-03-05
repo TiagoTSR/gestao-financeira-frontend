@@ -1,64 +1,119 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError, Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { AuthService } from './auth.service';
+
+let isRefreshing = false;
+const refreshTokenSubject: BehaviorSubject<boolean | null> = new BehaviorSubject<boolean | null>(null);
 
 export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  request = request.clone({
-    withCredentials: true
-  });
+  const reqClone = request.clone({ withCredentials: true });
 
-  return next(request).pipe(
+  return next(reqClone).pipe(
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
-        
-        switch (err.status) {
-          case 401:
-            Swal.fire({
-              icon: 'error',
-              title: 'Sessão Expirada',
-              text: 'Sua sessão expirou. Por favor, faça login novamente.',
-              timer: 3000
-            });
-            authService.removerDados();
-            router.navigate(['/login']);
-            break;
-
-          case 403:
-            Swal.fire({
-              icon: 'warning',
-              title: 'Acesso Negado',
-              text: 'Você não tem permissão para acessar este recurso.',
-              confirmButtonColor: '#3085d6'
-            });
-            break;
-
-          case 404:
-            console.error('Recurso não encontrado:', err.url);
-            break;
-
-          case 500:
-            Swal.fire({
-              icon: 'error',
-              title: 'Servidor Offline',
-              text: 'Não foi possível conectar ao servidor. Verifique sua conexão.',
-            });
-            break;
-
-          default:
-            console.error(`Erro ${err.status}:`, err.message);
-        }
-
-      } else {
-        console.error('Erro inesperado:', err);
+        return handleHttpError(err, reqClone, next, authService, router);
       }
-
       return throwError(() => err);
     })
   );
 };
+
+function handleHttpError(
+  err: HttpErrorResponse,
+  request: HttpRequest<any>,
+  next: HttpHandlerFn,
+  authService: AuthService,
+  router: Router
+): Observable<any> {
+
+  console.log(`[Interceptor] Erro ${err.status} em ${request.url}`);
+
+  if (request.url.includes('/api/login') && err.status === 401) {
+    return throwError(() => err);
+  }
+
+  if (request.url.includes('/api/refresh-token')) {
+    console.error('[Interceptor] Falha no refresh token');
+    return handleLogoutAndRedirect(authService, router, 'Sessão Expirada', 'Sua sessão expirou. Faça login novamente.');
+  }
+
+  if (err.status === 401 || err.status === 403) {
+    console.log('[Interceptor] Token expirado? Tentando refresh...');
+    return handleTokenExpired(request, next, authService, router);
+  }
+
+  switch (err.status) {
+    case 403:
+      showError('Acesso Negado', 'Você não tem permissão para acessar este recurso.', 'warning');
+      break;
+    case 404:
+      console.error('Recurso não encontrado:', request.url);
+      break;
+    case 0:
+    case 500:
+      showError('Servidor Indisponível', 'Não foi possível conectar ao servidor no momento.', 'error');
+      break;
+    default:
+      console.error(`Erro ${err.status}:`, err.message);
+  }
+
+  return throwError(() => err);
+}
+
+function handleTokenExpired(
+  request: HttpRequest<any>,
+  next: HttpHandlerFn,
+  authService: AuthService,
+  router: Router
+): Observable<any> {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    refreshTokenSubject.next(null);
+
+    console.log('[Interceptor] Chamando refresh token...');
+    return authService.refresh().pipe(
+      switchMap((response: any) => {
+        console.log('[Interceptor] Refresh bem-sucedido!', response);
+        isRefreshing = false;
+        refreshTokenSubject.next(true);
+        return next(request);
+      }),
+      catchError((refreshErr) => {
+        console.error('[Interceptor] Refresh falhou:', refreshErr);
+        isRefreshing = false;
+        refreshTokenSubject.next(false);
+        return handleLogoutAndRedirect(authService, router, 'Sessão Expirada', 'Não foi possível renovar sua sessão. Faça login novamente.');
+      })
+    );
+  } else {
+    return refreshTokenSubject.pipe(
+      filter(result => result !== null),
+      take(1),
+      switchMap(result => {
+        console.log('[Interceptor] Aguardando refresh... resultado:', result);
+        if (result) {
+          return next(request);
+        } else {
+          return throwError(() => new Error('Falha na renovação do token'));
+        }
+      })
+    );
+  }
+}
+
+function showError(title: string, text: string, icon: any) {
+  Swal.fire({ title, text, icon, confirmButtonColor: '#3085d6', timer: 4000, timerProgressBar: true });
+}
+
+function handleLogoutAndRedirect(authService: AuthService, router: Router, title: string, text: string): Observable<never> {
+  authService.removerDados();
+  router.navigate(['/login']);
+  showError(title, text, 'error');
+  return throwError(() => new Error(text));
+}
