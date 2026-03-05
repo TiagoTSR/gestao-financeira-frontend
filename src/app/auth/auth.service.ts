@@ -12,10 +12,10 @@ import { LoginResponse, Usuario } from '../models/usuario.model';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly API = "http://localhost:8080/api/login";
+  private readonly API = "http://localhost:8080/api";
 
   logar(login: Login): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.API, login, { withCredentials: true });
+    return this.http.post<LoginResponse>(`${this.API}/login`, login, { withCredentials: true });
   }
 
   saveUsuario(usuario: Usuario) {
@@ -23,12 +23,19 @@ export class AuthService {
   }
 
   logout() {
-  this.removerDados();
+    return this.http.post(`${this.API}/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => this.removerDados(),
+      error: () => this.removerDados() 
+    });
   }
   
   addToken(token: string) {
     sessionStorage.setItem('token', token);
   }
+
+  refresh(): Observable<{ message: string }> {
+  return this.http.post<{ message: string }>(`${this.API}/refresh-token`, {}, { withCredentials: true });
+}
 
   removerDados() {
     sessionStorage.clear();
