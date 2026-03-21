@@ -12,25 +12,9 @@ export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  const token = sessionStorage.getItem('token');
-
-  let reqClone = request.clone({ withCredentials: true });
-
-  if (token) {
-    reqClone = reqClone.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token.replace(/"/g, '')}`
-      }
-    });
-  }
+  const reqClone = request.clone({ withCredentials: true });
 
   return next(reqClone).pipe(
-    map(event => {
-      if (event instanceof HttpResponse && event.status === 204) {
-        return event;
-      }
-      return event;
-    }),
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
         return handleHttpError(err, reqClone, next, authService, router);
@@ -48,9 +32,9 @@ function handleHttpError(
   router: Router
 ): Observable<any> {
 
-  console.log(`[Interceptor] Erro ${err.status} em ${request.url}`);
+  /*console.log(`[Interceptor] Erro ${err.status} em ${request.url}`);*/
 
-  if (request.url.includes('/api/login') && err.status === 401) {
+  if (request.url.includes('/api/login')) {
     return throwError(() => err);
   }
 
@@ -91,7 +75,7 @@ function handleTokenExpired(
     refreshTokenSubject.next(null);
 
     return authService.refresh().pipe(
-      switchMap((response: any) => {
+      switchMap(() => {
         isRefreshing = false;
         refreshTokenSubject.next(true);
         return next(request);
