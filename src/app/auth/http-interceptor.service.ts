@@ -1,7 +1,7 @@
-import { HttpErrorResponse, HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError, Observable, map } from 'rxjs';
 import Swal from 'sweetalert2';
 import { AuthService } from './auth.service';
 
@@ -12,9 +12,25 @@ export const meuhttpInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  const reqClone = request.clone({ withCredentials: true });
+  const token = sessionStorage.getItem('token');
+
+  let reqClone = request.clone({ withCredentials: true });
+
+  if (token) {
+    reqClone = reqClone.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token.replace(/"/g, '')}`
+      }
+    });
+  }
 
   return next(reqClone).pipe(
+    map(event => {
+      if (event instanceof HttpResponse && event.status === 204) {
+        return event;
+      }
+      return event;
+    }),
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
         return handleHttpError(err, reqClone, next, authService, router);
@@ -39,12 +55,10 @@ function handleHttpError(
   }
 
   if (request.url.includes('/api/refresh-token')) {
-    console.error('[Interceptor] Falha no refresh token');
     return handleLogoutAndRedirect(authService, router, 'Sessão Expirada', 'Sua sessão expirou. Faça login novamente.');
   }
 
   if (err.status === 401 || err.status === 403) {
-    console.log('[Interceptor] Token expirado? Tentando refresh...');
     return handleTokenExpired(request, next, authService, router);
   }
 
@@ -76,16 +90,13 @@ function handleTokenExpired(
     isRefreshing = true;
     refreshTokenSubject.next(null);
 
-    console.log('[Interceptor] Chamando refresh token...');
     return authService.refresh().pipe(
       switchMap((response: any) => {
-        console.log('[Interceptor] Refresh bem-sucedido!', response);
         isRefreshing = false;
         refreshTokenSubject.next(true);
         return next(request);
       }),
       catchError((refreshErr) => {
-        console.error('[Interceptor] Refresh falhou:', refreshErr);
         isRefreshing = false;
         refreshTokenSubject.next(false);
         return handleLogoutAndRedirect(authService, router, 'Sessão Expirada', 'Não foi possível renovar sua sessão. Faça login novamente.');
@@ -96,7 +107,6 @@ function handleTokenExpired(
       filter(result => result !== null),
       take(1),
       switchMap(result => {
-        console.log('[Interceptor] Aguardando refresh... resultado:', result);
         if (result) {
           return next(request);
         } else {
