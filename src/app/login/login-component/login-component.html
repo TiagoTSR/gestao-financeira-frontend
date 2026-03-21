@@ -27,7 +27,19 @@
                 </div>
                 
                 <div class="col-12">
-                    <button type="submit" (click)="logar()">Login</button>
+                    <button 
+                    type="submit" 
+                    (click)="logar()" 
+                    [disabled]="bloqueado || loading">
+                    
+                    @if (bloqueado) {
+                        Tente novamente em {{ tempoFormatado }}
+                    } @else if (loading) {
+                        Aguarde...
+                    } @else {
+                        Login
+                    }
+                    </button>
                 </div>
              </div>
         </form>
