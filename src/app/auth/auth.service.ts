@@ -1,18 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-
-import { jwtDecode } from "jwt-decode";
 import { Observable } from 'rxjs';
 import { Login } from '../models/login.model';
 import { LoginResponse, Usuario } from '../models/usuario.model';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly API = "http://localhost:8080/api";
+  private readonly API = 'http://localhost:8080/api';
 
   logar(login: Login): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API}/login`, login, { withCredentials: true });
@@ -23,25 +20,21 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post(`${this.API}/logout`, {}, { withCredentials: true,responseType: 'text' }).subscribe({
+    return this.http.post(`${this.API}/logout`, {}, { withCredentials: true, responseType: 'text' }).subscribe({
       next: () => this.removerDados(),
-      error: () => this.removerDados() 
+      error: () => this.removerDados()
     });
-  }
-  
-  addToken(token: string) {
-    sessionStorage.setItem('token', token);
   }
 
   refresh(): Observable<{ message: string }> {
-  return this.http.post<{ message: string }>(`${this.API}/refresh-token`, {}, { withCredentials: true });
-}
+    return this.http.post<{ message: string }>(`${this.API}/refresh-token`, {}, { withCredentials: true });
+  }
 
   removerDados() {
     sessionStorage.clear();
   }
 
- getUsuarioLogado(): Usuario | null {
+  getUsuarioLogado(): Usuario | null {
     const data = sessionStorage.getItem('usuario_dados');
     return data ? JSON.parse(data) : null;
   }
