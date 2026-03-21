@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post(`${this.API}/logout`, {}, { withCredentials: true }).subscribe({
+    return this.http.post(`${this.API}/logout`, {}, { withCredentials: true,responseType: 'text' }).subscribe({
       next: () => this.removerDados(),
       error: () => this.removerDados() 
     });
