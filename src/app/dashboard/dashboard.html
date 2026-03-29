@@ -1,0 +1,33 @@
+<div class="container">
+    <h1 class="mb-4">Dashboard</h1>
+
+    <div class="charts-wrapper">
+        
+        <div class="chart-box">
+            <p-panel header="Lançamentos por categoria">
+                <div class="chart-container">
+                    <p-chart 
+                        type="pie" 
+                        [data]="pieChartData" 
+                        [options]="pieChartOptions ">
+                    </p-chart>
+                </div>
+            </p-panel>
+        </div>
+
+        <div class="chart-box">
+            <p-panel header="Lançamentos por dia">
+                <div class="chart-container">
+                    <p-chart 
+                        type="line" 
+                        [data]="lineChartData" 
+                        [options]="lineChartOptions"
+                        width="100%"
+                        height="100%">
+                    </p-chart>
+                </div>
+            </p-panel>
+        </div>
+
+    </div>
+</div>
