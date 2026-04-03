@@ -1,105 +1,263 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { PanelModule } from 'primeng/panel';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
+import { DashboardService } from './dashboard.service';
+import { forkJoin } from 'rxjs';
+
 Chart.register(ChartDataLabels);
+
+type Modo = 'mes' | 'periodo';
+
+// ✅ Interfaces para tipagem dos dados da API
+interface DadoCategoria {
+  categoria: { nome: string };
+  total: number;
+}
+
+interface DadoDia {
+  dia: string; // "YYYY-MM-DD"
+  tipo: 'RECEITA' | 'DESPESA';
+  total: number;
+}
+
+const CHART_COLORS = {
+  receita: '#3366CC',
+  despesa: '#D62B00',
+  categorias: ['#FF9900', '#109618', '#990099', '#3B3EAC', '#0099C6', '#DD4477'],
+};
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ChartModule, PanelModule],
+  standalone: true,
+  imports: [
+    ChartModule,
+    PanelModule,
+    DatePickerModule,
+    SelectButtonModule,
+    ButtonModule,
+    FormsModule,
+    ProgressSpinnerModule,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
+  pieChartData: any;
+  lineChartData: any;
+  carregando = false;
 
-   pieChartData = {
-    labels: ['Mensal', 'Educação', 'Lazer', 'Imprevistos'],
-    datasets: [
-      {
-        data: [2500, 2700, 550, 235],
-        backgroundColor: ['#FF9900', '#109618', '#990099', '#3B3EAC']
-      }
-    ]
+  modos = [
+    { label: 'Por mês', value: 'mes' },
+    { label: 'Por período', value: 'periodo' },
+  ];
+  modoSelecionado: Modo = 'mes';
+
+  mesSelecionado: Date = new Date();
+  intervalo: Date[] = [];
+  periodoLabel = '';
+  pieChartOptions = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' as const },
+      datalabels: {
+        color: '#fff',
+        font: { weight: 'bold' as const, size: 14 },
+        formatter: (value: number) => value,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            return `${label}: ${value} lançamentos`;
+          },
+        },
+      },
+    },
   };
-  lineChartData = {
-    labels: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+
+  lineChartOptions: any = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'bottom' as const },
+      datalabels: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const value: number = context.raw || 0;
+            return `${context.dataset.label}: R$ ${value.toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+            })}`;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value: any) =>
+            'R$ ' + Number(value).toLocaleString('pt-BR'),
+        },
+      },
+      x: {
+        grid: { display: false },
+      },
+    },
+    elements: {
+      line: { borderWidth: 3 },
+    },
+  };
+
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit(): void {
+    this.aplicarFiltro();
+  }
+
+  aplicarFiltro(): void {
+    const { inicio, fim } = this.calcularPeriodo();
+    if (!inicio || !fim) return;
+
+    this.periodoLabel = `${this.formatarData(inicio)} – ${this.formatarData(fim)}`;
+    this.carregarDados(inicio, fim);
+  }
+
+  private calcularPeriodo(): { inicio: string; fim: string } {
+    const toISO = (data: Date): string => {
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    };
+
+    if (this.modoSelecionado === 'mes') {
+      const ano = this.mesSelecionado.getFullYear();
+      const mes = this.mesSelecionado.getMonth();
+      return {
+        inicio: toISO(new Date(ano, mes, 1)),
+        fim: toISO(new Date(ano, mes + 1, 0)),
+      };
+    }
+
+    if (this.intervalo?.length === 2 && this.intervalo[1]) {
+      return {
+        inicio: toISO(this.intervalo[0]),
+        fim: toISO(this.intervalo[1]),
+      };
+    }
+
+    return { inicio: '', fim: '' };
+  }
+
+  private carregarDados(inicio: string, fim: string): void {
+    this.carregando = true;
+
+    forkJoin({
+      porCategoria: this.dashboardService.lancamentosPorCategoria(inicio, fim),
+      porDia: this.dashboardService.lancamentosPorDia(inicio, fim),
+    }).subscribe({
+      next: ({ porCategoria, porDia }) => {
+        this.montarGraficoPizza(porCategoria);
+        this.montarGraficoLinha(porDia);
+        this.carregando = false;
+      },
+      error: () => (this.carregando = false),
+    });
+  }
+
+  private montarGraficoPizza(dados: DadoCategoria[]): void {
+    this.pieChartData = {
+      labels: dados.map((d) => d.categoria.nome),
+      datasets: [
+        {
+          data: dados.map((d) => d.total),
+          backgroundColor: CHART_COLORS.categorias,
+        },
+      ],
+    };
+  }
+
+  private montarGraficoLinha(dados: DadoDia[]): void {
+  const diasUnicos = [...new Set(dados.map((d) => d.dia))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  const buscarTotal = (dia: string, tipo: 'RECEITA' | 'DESPESA'): number => {
+    const registro = dados.find((d) => d.dia === dia && d.tipo === tipo);
+    return registro?.total ?? 0;
+  };
+
+  const receitas = diasUnicos.map((dia) => buscarTotal(dia, 'RECEITA'));
+  const despesas = diasUnicos.map((dia) => buscarTotal(dia, 'DESPESA'));
+
+  const maiorValor = Math.max(...receitas, ...despesas, 500);
+
+  const maxDinamico = Math.ceil((maiorValor * 1.2) / 5000) * 5000;
+
+  const stepSize = maxDinamico <= 10000  ? 1000
+                 : maxDinamico <= 50000  ? 5000
+                 : maxDinamico <= 200000 ? 10000
+                 : 50000;
+
+  this.lineChartOptions = {
+    ...this.lineChartOptions,
+    scales: {
+      y: {
+        min: 500,
+        max: maxDinamico,
+        beginAtZero: false,
+        ticks: {
+          stepSize,
+          callback: (value: any) =>
+            'R$ ' + Number(value).toLocaleString('pt-BR'),
+        },
+      },
+      x: { grid: { display: false } },
+    },
+  };
+
+  this.lineChartData = {
+    labels: diasUnicos.map((diaStr) => {
+      const [, mes, dia] = diaStr.split('-');
+      return `${dia}/${mes}`;
+    }),
     datasets: [
       {
         label: 'Receitas',
-        data: [4, 10, 18, 5, 1, 20, 3],
-        borderColor: '#3366CC'
-      }, {
+        data: receitas,
+        borderColor: CHART_COLORS.receita,
+        backgroundColor: CHART_COLORS.receita + '33',
+        tension: 0.4,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        fill: false,
+        spanGaps: true,
+      },
+      {
         label: 'Despesas',
-        data: [10, 15, 8, 5, 1, 7, 9],
-        borderColor: '#D62B00'
-      }
-    ]
+        data: despesas,
+        borderColor: CHART_COLORS.despesa,
+        backgroundColor: CHART_COLORS.despesa + '33',
+        tension: 0.4,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        fill: false,
+        spanGaps: true,
+      },
+    ],
   };
+}
 
- pieChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      labels: { boxWidth: 10, padding: 8 }
-    },
-    datalabels: {
-      color: '#fff',
-      font: { weight: 'bold' as const, size: 12 },
-      anchor: 'center' as const,
-      align: 'center' as const,
-      clamp: true,
-      clip: false,
-      formatter: (value: number, ctx: any) => {
-        const total = ctx.dataset.data.reduce((a: number, b: number) => a + b, 0);
-        const percent = ((value / total) * 100).toFixed(1);
-        if ((value / total) < 0.07) return '';
-        return `R$ ${value.toLocaleString('pt-BR')}\n${percent}%`;
-      }
-    }
-  },
-  layout: { padding: 0 }
-};
-
-maxValue = Math.max(...this.lineChartData.datasets.flatMap(d => d.data));
-
-lineChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      labels: { boxWidth: 10, padding: 8 }
-    },
-    datalabels: {
-      color: (ctx: any) => ctx.dataset.borderColor, // mesma cor da linha
-      font: { weight: 'bold' as const, size: 11 },
-      anchor: 'end' as const,
-      align: 'top' as const,        // número aparece acima do ponto
-      offset: 4,
-      formatter: (value: number) => value
-    }
-  },
-  layout: { padding: { top: 20, bottom: 0, left: 0, right: 0 } }, // espaço para o label do topo
-  scales: {
-    y: {
-      min: 0,
-      max: 25,
-      ticks: { padding: 2 },
-      grid: { drawBorder: false }
-    },
-    x: {
-      ticks: { padding: 2 },
-      grid: { drawBorder: false },
-      offset: false
-    }
-  }
-};
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+private formatarData(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
 }
