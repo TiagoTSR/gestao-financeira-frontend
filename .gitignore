@@ -21,6 +21,10 @@ node_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+src/environments/environment.ts
+src/environments/environment.prod.ts
+src/environments/environment.development.ts
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
