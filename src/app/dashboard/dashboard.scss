@@ -1,27 +1,33 @@
 .charts-wrapper {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     flex-wrap: nowrap;
     width: 100%;
-    align-items: flex-start; /* <-- era stretch, isso forçava ambos terem a mesma altura */
+    align-items: flex-start;
 }
 
 .chart-box {
     flex: 1;
     min-width: 0;
-    /* remova o display: flex e flex-direction: column daqui */
 }
 
 .chart-container {
     position: relative;
     width: 100%;
-    height: 350px;
+    height: 380px; 
 }
 
-/* Força TODOS os elementos internos do p-chart a preencherem a altura */
+::ng-deep .chart-container {
+    p-chart, p-chart > div, p-chart canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
 ::ng-deep .chart-container {
     p-chart,
-    p-chart > div,        /* div wrapper interno do PrimeNG */
+    p-chart > div,
     p-chart canvas {
         display: block;
         width: 100% !important;
@@ -29,19 +35,15 @@
     }
 }
 
-::ng-deep .p-panel .p-panel-content {
-    padding: 0.25rem !important;
-}
-
-::ng-deep .p-panel .p-panel-header {
-    padding: 0.4rem 0.75rem !important;
-}
-
-@media (max-width: 768px) {
+/* Responsividade: um embaixo do outro em telas menores */
+@media (max-width: 992px) {
     .charts-wrapper {
         flex-wrap: wrap;
     }
+    .chart-box.pizza, .chart-box.linha {
+        flex: 1 1 100%; /* Ocupa a largura toda */
+    }
     .chart-container {
-        height: 260px;
+        height: 300px;
     }
 }
