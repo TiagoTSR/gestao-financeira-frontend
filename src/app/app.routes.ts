@@ -7,6 +7,7 @@ import { PessoaCadastro } from './pessoas/pessoa-cadastro/pessoa-cadastro';
 import { loginComponent } from './login/login-component/login-component';
 import { authGuard } from './auth/auth.guard';
 import { Dashboard } from './dashboard/dashboard';
+import { Relatorios } from './relatorios/relatorios';
 
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
         {path: "lancamentos", component: LancamentosPesquisa,canActivate: [authGuard]},
         {path: "pessoas", component: PessoasPesquisa,canActivate: [authGuard]},
         {path: "dashboard", component: Dashboard,canActivate: [authGuard]},
+        {path: "relatorios", component: Relatorios,canActivate: [authGuard]},
         {path: "lancamentos/cadastro", component: LancamentoCadastro,canActivate: [authGuard]},
         {path: "pessoas/cadastro", component: PessoaCadastro,canActivate: [authGuard]},
         {path: "lancamentos/cadastro/:id", component: LancamentoCadastro,canActivate: [authGuard]},
