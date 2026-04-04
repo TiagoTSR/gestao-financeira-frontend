@@ -60,7 +60,8 @@ export class Dashboard implements OnInit {
   modoSelecionado: Modo = 'mes';
 
   mesSelecionado: Date = new Date();
-  intervalo: Date[] = [];
+  periodoInicio?: Date;
+  periodoFim?: Date;
   periodoLabel = '';
   pieChartOptions = {
     maintainAspectRatio: false,
@@ -131,31 +132,31 @@ export class Dashboard implements OnInit {
   }
 
   private calcularPeriodo(): { inicio: string; fim: string } {
-    const toISO = (data: Date): string => {
-      const ano = data.getFullYear();
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const dia = String(data.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
+  const toISO = (data: Date): string => {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  if (this.modoSelecionado === 'mes') {
+    const ano = this.mesSelecionado.getFullYear();
+    const mes = this.mesSelecionado.getMonth();
+    return {
+      inicio: toISO(new Date(ano, mes, 1)),
+      fim: toISO(new Date(ano, mes + 1, 0)),
     };
-
-    if (this.modoSelecionado === 'mes') {
-      const ano = this.mesSelecionado.getFullYear();
-      const mes = this.mesSelecionado.getMonth();
-      return {
-        inicio: toISO(new Date(ano, mes, 1)),
-        fim: toISO(new Date(ano, mes + 1, 0)),
-      };
-    }
-
-    if (this.intervalo?.length === 2 && this.intervalo[1]) {
-      return {
-        inicio: toISO(this.intervalo[0]),
-        fim: toISO(this.intervalo[1]),
-      };
-    }
-
-    return { inicio: '', fim: '' };
   }
+
+  if (this.periodoInicio && this.periodoFim) {
+    return {
+      inicio: toISO(this.periodoInicio),
+      fim: toISO(this.periodoFim),
+    };
+  }
+
+  return { inicio: '', fim: '' };
+}
 
   private carregarDados(inicio: string, fim: string): void {
     this.carregando = true;

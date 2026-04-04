@@ -13,20 +13,36 @@
         <p-datepicker 
           [(ngModel)]="mesSelecionado" 
           view="month" 
-          dateFormat="mm/yy" 
-          [readonlyInput]="true" 
-          placeholder="Selecione o mês" />
+          dateFormat="mm/yy"
+          placeholder="mm/aaaa"
+          [showIcon]="true"
+          inputId="mesSelecionado" />
       }
 
       @if (modoSelecionado === 'periodo') {
         <p-datepicker 
-          [(ngModel)]="intervalo" 
-          selectionMode="range" 
-          [readonlyInput]="true" 
-          placeholder="Selecione o período" />
+          [(ngModel)]="periodoInicio"
+          dateFormat="dd/mm/yy"
+          placeholder="dd/mm/aaaa"
+          [showIcon]="true"
+          inputId="periodoInicio" />
+
+        <span class="text-secondary">até</span>
+
+        <p-datepicker 
+          [(ngModel)]="periodoFim"
+          dateFormat="dd/mm/yy"
+          placeholder="dd/mm/aaaa"
+          [showIcon]="true"
+          [minDate]="periodoInicio"
+          inputId="periodoFim" />
       }
 
-      <p-button label="Filtrar" icon="pi pi-search" (onClick)="aplicarFiltro()" />
+      <p-button 
+        label="Filtrar" 
+        icon="pi pi-search" 
+        styleClass="ml-2"
+        (onClick)="aplicarFiltro()" />
     </div>
 
     @if (periodoLabel) {
@@ -42,23 +58,21 @@
     </div>
   }
 
- <div class="charts-wrapper" [class.opacity-50]="carregando">
-  
-  <div class="chart-box pizza"> 
-    <p-panel header="Lançamentos por categoria">
-      <div class="chart-container">
-        <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" />
-      </div>
-    </p-panel>
-  </div>
+  <div class="charts-wrapper" [class.opacity-50]="carregando">
+    <div class="chart-box pizza"> 
+      <p-panel header="Lançamentos por categoria">
+        <div class="chart-container">
+          <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" />
+        </div>
+      </p-panel>
+    </div>
 
-  <div class="chart-box linha">
-    <p-panel header="Lançamentos por dia">
-      <div class="chart-container">
-        <p-chart type="line" [data]="lineChartData" [options]="lineChartOptions" />
-      </div>
-    </p-panel>
+    <div class="chart-box linha">
+      <p-panel header="Lançamentos por dia">
+        <div class="chart-container">
+          <p-chart type="line" [data]="lineChartData" [options]="lineChartOptions" />
+        </div>
+      </p-panel>
+    </div>
   </div>
-
-</div>
 </div>
