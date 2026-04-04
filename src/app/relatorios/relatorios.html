@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="grid">
+        <div class="col-12">
+            <h1>Relatório de lançamentos por pessoa</h1>
+        </div>
+
+        <div class="col-12">
+            <div class="flex flex-wrap gap-3 align-items-center mb-4">
+                <p-selectButton 
+                    [options]="modos" 
+                    [(ngModel)]="modoSelecionado" 
+                    optionLabel="label" 
+                    optionValue="value" />
+
+                @if (modoSelecionado === 'mes') {
+                    <p-datepicker 
+                        [(ngModel)]="mesSelecionado" 
+                        view="month" 
+                        dateFormat="mm/yy"
+                        placeholder="mm/aaaa"
+                        [showIcon]="true"
+                        inputId="mesSelecionado" />
+                }
+
+                @if (modoSelecionado === 'periodo') {
+                    <p-datepicker 
+                        [(ngModel)]="periodoInicio"
+                        dateFormat="dd/mm/yy"
+                        placeholder="dd/mm/aaaa"
+                        [showIcon]="true"
+                        inputId="periodoInicio" />
+
+                    <span class="text-secondary">até</span>
+
+                    <p-datepicker 
+                        [(ngModel)]="periodoFim"
+                        dateFormat="dd/mm/yy"
+                        placeholder="dd/mm/aaaa"
+                        [showIcon]="true"
+                        [minDate]="periodoInicio"
+                        inputId="periodoFim" />
+                }
+
+                <p-button 
+                    label="Gerar" 
+                    icon="pi pi-file" 
+                    styleClass="ml-2"
+                    [disabled]="!periodoValido()"
+                    (onClick)="gerar()" />
+            </div>
+
+            @if (periodoLabel) {
+                <p class="text-secondary">
+                    Exibindo dados de: <strong>{{ periodoLabel }}</strong>
+                </p>
+            }
+        </div>
+    </div>
+</div>
