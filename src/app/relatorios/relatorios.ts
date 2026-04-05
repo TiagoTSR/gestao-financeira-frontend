@@ -3,6 +3,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
+import { RelatoriosService } from './relatorios.service';
 
 type Modo = 'mes' | 'periodo';
 
@@ -67,15 +68,32 @@ export class Relatorios implements OnInit {
     const [y, m, d] = iso.split('-');
     return `${d}/${m}/${y}`;
   }
+  constructor(private relatoriosService: RelatoriosService) {}
 
-  gerar(): void {
-    if (!this.periodoValido()) return;
+  async gerar(): Promise<void> {
+  if (!this.periodoValido()) return;
 
-    const { inicio, fim } = this.calcularPeriodo();
-    this.periodoLabel = `${this.formatarData(inicio)} – ${this.formatarData(fim)}`;
+  const { inicio, fim } = this.calcularPeriodo();
 
-    console.log('Início:', inicio);
-    console.log('Fim:', fim);
+  try {
+    const blob = await this.relatoriosService
+      .relatorioLancamentosPorPessoa(
+        new Date(inicio),
+        new Date(fim)
+      );
 
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = `relatorio.pdf`;
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+    link.remove();
+
+  } catch (error) {
+    console.error('Erro ao gerar relatório', error);
   }
+}
 }
