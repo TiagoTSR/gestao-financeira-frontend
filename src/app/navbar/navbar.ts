@@ -1,3 +1,4 @@
+import { Relatorios } from './../relatorios/relatorios';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -28,6 +29,14 @@ export class Navbar {
   
   Pessoas(): void {
   this.router.navigate(['/admin/pessoas']);
+  }
+
+  Relatorios(): void {
+    this.router.navigate(['/admin/relatorios']);
+  }
+
+  Dashboard(): void {
+    this.router.navigate(['/admin/dashboard']);
   }
 
   authService = inject(AuthService);
