@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { PessoaService } from '../pessoa';
 import { Pessoa } from '../../models/pessoa.model';
+import { Contato } from '../../models/contato.model';
 
 @Component({
   selector: 'app-pessoa-cadastro',
@@ -39,6 +40,12 @@ export class PessoaCadastro implements OnInit {
 
   idPessoa?: number;
   editando = false;
+
+  contatos: Contato[] = [];
+
+  // Contato sendo editado inline na tabela
+  contatoEmEdicao: Contato = { nome: '', email: '', telefone: '' };
+  indiceEdicao: number | null = null;
 
   constructor(
     private pessoaService: PessoaService,
@@ -73,6 +80,12 @@ export class PessoaCadastro implements OnInit {
         cidade: form.value.cidade,
         estado: form.value.estado,
       },
+      contatos: this.contatos.map(c => ({
+      id: c.id ?? undefined,
+      nome: c.nome,
+      email: c.email,
+      telefone: c.telefone,
+    })),
     };
 
     const request$ = this.editando
@@ -106,7 +119,7 @@ export class PessoaCadastro implements OnInit {
   private carregarPessoa(id: number): void {
     this.pessoaService.findById(id).subscribe({
       next: (pessoa) => {
-        // Aguarda o formulário estar pronto antes de preencher
+        this.contatos = pessoa.contatos ? [...pessoa.contatos] : [];
         setTimeout(() => {
           if (this.formulario) {
             this.formulario.form.patchValue({
@@ -146,6 +159,46 @@ export class PessoaCadastro implements OnInit {
 
     this.idPessoa = undefined;
     this.editando = false;
+  }
+
+  adicionarContato(): void {
+  if (!this.contatoEmEdicao.nome || !this.contatoEmEdicao.email || !this.contatoEmEdicao.telefone) {
+    Swal.fire({ title: 'Preencha todos os campos do contato.', icon: 'warning', confirmButtonText: 'OK' });
+    return;
+  }
+
+  if (this.indiceEdicao !== null) {
+    const contatoOriginal = this.contatos[this.indiceEdicao];
+
+    this.contatos[this.indiceEdicao] = {
+      ...this.contatoEmEdicao,
+      id: contatoOriginal.id 
+    };
+
+    this.indiceEdicao = null;
+  } else {
+    this.contatos = [...this.contatos, { ...this.contatoEmEdicao }];
+  }
+
+  this.contatoEmEdicao = { nome: '', email: '', telefone: '' };
+}
+
+  editarContato(index: number): void {
+    this.indiceEdicao = index;
+    this.contatoEmEdicao = { ...this.contatos[index] };
+  }
+
+  removerContato(index: number): void {
+    this.contatos = this.contatos.filter((_, i) => i !== index);
+    if (this.indiceEdicao === index) {
+      this.indiceEdicao = null;
+      this.contatoEmEdicao = { nome: '', email: '', telefone: '' };
+    }
+  }
+
+  cancelarEdicaoContato(): void {
+    this.indiceEdicao = null;
+    this.contatoEmEdicao = { nome: '', email: '', telefone: '' };
   }
 
   novo(): void {
