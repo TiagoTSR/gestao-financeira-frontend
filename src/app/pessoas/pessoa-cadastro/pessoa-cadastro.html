@@ -1,88 +1,145 @@
 <div class="container">
-    <form #form="ngForm" (ngSubmit)="salvar(form)">
-  
-      <div class="grid">
-        <div class="col-12">
-          <h1>{{ editando ? 'Editar Pessoa' : 'Nova Pessoa' }}</h1>
-        </div>
-  
-        <div class="col-12 p-fluid">
-          <label>Nome</label>
-          <input pInputText
-                name="nome"
-                type="text"
-                appOnlyLettersName
-                [maxLength]="20"
-                placeholder="Digite seu nome" ngModel #nome="ngModel" required minlength="5">
-
-          <app-message [control]="nome.control" error="required"
-            text="Informe o nome"></app-message>
-          <app-message [control]="nome.control" error="minlength"
-            text="Mínimo de {{ nome.errors?.['minlength']?.requiredLength }} caracteres"></app-message>
-        </div>
-  
-        <div class="col-12 md:col-9 p-fluid">
-          <label>Logradouro</label>
-         <input name="logradouro" pInputText appAddress [maxLength]="50" type="text"
-          ngModel #logradouro="ngModel" required>
-
-          <app-message [control]="logradouro.control" error="required"
-            text="Informe o logradouro"></app-message>
-        </div>
-  
-        <div class="col-12 md:col-3 p-fluid">
-          <label>Número</label>
-          <input name="numero" pInputText mask="000"type="text" [maxLength]="3" ngModel #numero="ngModel" [required]="true">
-
-          <app-message [control]="numero.control" error="required"
-            text="Informe o número"></app-message>
-        </div>
-  
-        <div class="col-12 md:col-4 p-fluid">
-          <label>Complemento</label>
-          <input name="complemento" pInputText appComplement [maxLength]="50" ngModel #complemento="ngModel" type="text">
-        </div>
-  
-        <div class="col-12 md:col-4 p-fluid">
-          <label>Bairro</label>
-          <input name="bairro" pInputText appAddress [maxLength]="50" type="text" ngModel #bairro="ngModel" required>
-
-          <app-message [control]="bairro.control" error="required"
-            text="Informe o bairro"></app-message>
-        </div>
-  
-        <div class="col-12 md:col-4 p-fluid">
-          <label>CEP</label>
-          <input pInputText name="cep" ngModel #cep="ngModel" mask="00000-000">
-        </div>
-  
-        <div class="col-12 md:col-6 p-fluid">
-          <label>Cidade</label>
-          <input name="cidade" pInputText appOnlyLettersName
-                [maxLength]="20" type="text" ngModel #cidade="ngModel" required minlength="3">
-          <app-message [control]="cidade.control" error="required"
-            text="Informe a cidade"></app-message>
-        </div>
-  
-        <div class="col-12 md:col-6 p-fluid">
-          <label>Estado</label>
-          <input name="estado" pInputText appState type="text" ngModel #estado="ngModel" required minlength="2" maxlength="2">
-          <app-message [control]="estado.control" error="required"
-            text="Informe o estado"></app-message>
-        </div>
-  
-        <div class="col-12">
-          <button pButton type="submit" icon="pi pi-check" [label]="editando ? 'Atualizar' : 'Salvar'"
-          [disabled]="form.invalid" ></button>
-          <button pButton type="button" label="Novo" icon="pi pi-plus"  (click)="novo()" class="p-button-info"></button>
-  
-          <button pButton type="button" 
-                label="Voltar" 
-                icon="pi pi-arrow-left" (click)="voltar()">         
-          </button>
-        </div>
+  <form #form="ngForm" (ngSubmit)="salvar(form)">
+    <div class="grid">
+      <div class="col-12">
+        <h1>{{ editando ? 'Editar Pessoa' : 'Nova Pessoa' }}</h1>
       </div>
-  
-    </form>
-  
-  </div>
+
+      <div class="col-12 p-fluid">
+        <label>Nome</label>
+        <input pInputText name="nome" type="text" appOnlyLettersName [maxLength]="20"
+          placeholder="Digite seu nome" ngModel #nome="ngModel" required minlength="5">
+        <app-message [control]="nome.control" error="required" text="Informe o nome"></app-message>
+        <app-message [control]="nome.control" error="minlength"
+          text="Mínimo de {{ nome.errors?.['minlength']?.requiredLength }} caracteres"></app-message>
+      </div>
+
+      <div class="col-12 md:col-9 p-fluid">
+        <label>Logradouro</label>
+        <input name="logradouro" pInputText appAddress [maxLength]="50" type="text" ngModel #logradouro="ngModel" required>
+        <app-message [control]="logradouro.control" error="required" text="Informe o logradouro"></app-message>
+      </div>
+
+      <div class="col-12 md:col-3 p-fluid">
+        <label>Número</label>
+        <input name="numero" pInputText mask="000" type="text" [maxLength]="3" ngModel #numero="ngModel" [required]="true">
+        <app-message [control]="numero.control" error="required" text="Informe o número"></app-message>
+      </div>
+
+      <div class="col-12 md:col-4 p-fluid">
+        <label>Complemento</label>
+        <input name="complemento" pInputText appComplement [maxLength]="50" ngModel type="text">
+      </div>
+
+      <div class="col-12 md:col-4 p-fluid">
+        <label>Bairro</label>
+        <input name="bairro" pInputText appAddress [maxLength]="50" type="text" ngModel #bairro="ngModel" required>
+        <app-message [control]="bairro.control" error="required" text="Informe o bairro"></app-message>
+      </div>
+
+      <div class="col-12 md:col-4 p-fluid">
+        <label>CEP</label>
+        <input pInputText name="cep" ngModel mask="00000-000">
+      </div>
+
+      <div class="col-12 md:col-6 p-fluid">
+        <label>Cidade</label>
+        <input name="cidade" pInputText appOnlyLettersName [maxLength]="20" type="text"
+          ngModel #cidade="ngModel" required minlength="3">
+        <app-message [control]="cidade.control" error="required" text="Informe a cidade"></app-message>
+      </div>
+
+      <div class="col-12 md:col-6 p-fluid">
+        <label>Estado</label>
+        <input name="estado" pInputText appState type="text" ngModel #estado="ngModel" required minlength="2" maxlength="2">
+        <app-message [control]="estado.control" error="required" text="Informe o estado"></app-message>
+      </div>
+
+      <!-- SEÇÃO DE CONTATOS -->
+      <div class="col-12">
+        <h2>Contatos</h2>
+      </div>
+
+      <!-- Formulário inline de contato -->
+      <div class="col-12 md:col-4 p-fluid">
+        <label>Nome do contato</label>
+        <input pInputText type="text" [(ngModel)]="contatoEmEdicao.nome" name="contatoNome" [ngModelOptions]="{standalone: true}">
+      </div>
+
+      <div class="col-12 md:col-4 p-fluid">
+        <label>E-mail</label>
+        <input pInputText type="email" [(ngModel)]="contatoEmEdicao.email" name="contatoEmail" [ngModelOptions]="{standalone: true}">
+      </div>
+
+      <div class="col-12 md:col-4 p-fluid">
+        <label>Telefone</label>
+        <input pInputText type="text" mask="(00) 00000-0000" [(ngModel)]="contatoEmEdicao.telefone"
+          name="contatoTelefone" [ngModelOptions]="{standalone: true}">
+      </div>
+
+      <div class="col-12 contato-acoes">
+        <button pButton type="button"
+          [label]="indiceEdicao !== null ? 'Atualizar contato' : 'Adicionar contato'"
+          [icon]="indiceEdicao !== null ? 'pi pi-refresh' : 'pi pi-plus'"
+          class="p-button-secondary"
+          (click)="adicionarContato()">
+        </button>
+        @if (indiceEdicao !== null) {
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-text p-button-danger"
+          (click)="cancelarEdicaoContato()">
+        </button>
+      }
+      </div>
+
+    @if (contatos.length > 0) {
+  <div class="col-12">
+        <p-table [value]="contatos" tableStyleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th style="width: 120px; text-align: center">Ações</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-contato let-i="rowIndex">
+            <tr [class.linha-editando]="indiceEdicao === i">
+              <td>{{ contato.nome }}</td>
+              <td>{{ contato.email }}</td>
+              <td>{{ contato.telefone }}</td>
+              <td style="text-align: center">
+                <button pButton type="button" icon="pi pi-pencil"
+                  class="p-button-text p-button-sm"
+                  (click)="editarContato(i)">
+                </button>
+                <button pButton type="button" icon="pi pi-trash"
+                  class="p-button-text p-button-sm p-button-danger"
+                  (click)="removerContato(i)">
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+      <div class="col-12">
+        <button pButton type="submit" icon="pi pi-check"
+          [label]="editando ? 'Atualizar' : 'Salvar'"
+          [disabled]="form.invalid">
+        </button>
+        <button pButton type="button" label="Novo" icon="pi pi-plus"
+          (click)="novo()" class="p-button-info">
+        </button>
+        <button pButton type="button" label="Voltar" icon="pi pi-arrow-left"
+          (click)="voltar()">
+        </button>
+      </div>
+
+    </div>
+  </form>
+</div>
