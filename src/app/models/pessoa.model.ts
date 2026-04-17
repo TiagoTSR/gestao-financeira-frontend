@@ -1,3 +1,4 @@
+import { Contato } from './contato.model';
 import { Endereco } from './endereco.model';
 
 export interface Pessoa {
@@ -5,4 +6,5 @@ export interface Pessoa {
   nome: string;
   endereco: Endereco;
   ativo: boolean;
+  contatos?: Contato[];
 }
