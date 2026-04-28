@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Pessoa } from '../models/pessoa.model';
 import { PageResponse } from '../shared/page-response.model';
 import { PessoaQueryParams } from '../shared/pessoa-query-params.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { PessoaQueryParams } from '../shared/pessoa-query-params.model';
 export class PessoaService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/pessoas';
+  private apiUrl = `${environment.apiUrl}/api/pessoas`;
 
   findAll(params?: PessoaQueryParams): Observable<PageResponse<Pessoa>> {
     const httpParams = this.toHttpParams(params);

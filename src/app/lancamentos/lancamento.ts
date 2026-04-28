@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { Lancamento } from '../models/lancamento.model';
 import { LancamentoQueryParams } from '../shared/lancamento-query-params.model';
 import { PageResponse } from '../shared/page-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class LancamentoService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/lancamentos';
+  private apiUrl = `${environment.apiUrl}/api/lancamentos`;
 
   findAll(params: LancamentoQueryParams): Observable<any> {
     let httpParams = new HttpParams()

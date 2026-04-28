@@ -3,13 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Login } from '../models/login.model';
 import { LoginResponse, Usuario } from '../models/usuario.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = `${environment.apiUrl}/api`;
 
   logar(login: Login): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API}/login`, login, { withCredentials: true });
